@@ -1,0 +1,190 @@
+/*
+ * GLOBALS
+ */
+* {
+    box-sizing: border-box;
+}
+body {
+    font-size: 18px;
+    line-height: 1.45;
+    font-weight: 400;
+    font-family: ibm-plex-sans-webfont, sans-serif;
+    color: #222;
+}
+h1, h2, h3, h4 {
+    line-height: 1.15;
+}
+h2 {
+    font-size: 24px;
+    font-weight: 500;
+}
+hr {
+    border-top: none;
+    border-bottom: 1px solid #ececec;
+}
+p {
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+a {
+    color: #111;
+}
+.button-text {
+    display: inline-block;
+    color: #aaa;
+    font-size: 18px;
+    margin-top: 30px;
+}
+input[type="text"],
+input[type="email"] {
+    height: 42px;
+    outline: none;
+    box-shadow: none;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding-left: 14px;
+}
+input[type="text"]:not([readonly]):focus,
+input[type="email"]:not([readonly]):focus{
+    border-color: #08c;
+}
+::placeholder {
+    color: #bbb;
+}
+button,
+input[type="submit"] {
+    background: #e7e7e7;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    border-radius: 4px;
+    color: #111;
+    height: 42px;
+    padding: 8px 20px 8px;
+    line-height: 1;
+}
+button:active,
+input[type="submit"]:active {
+    background: #ddd;
+}
+
+@media (max-width: 1000px) {
+    .container {
+        max-width: 800px;
+    }
+}
+@media (max-width: 880px) {
+    .container {
+        max-width: 640px;
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+}
+@media (max-width: 680px) {
+    body {
+        font-size: 19px;
+    }
+    .container {
+        max-width: 100%;
+        padding-right: 30px;
+        padding-left: 30px;
+    }
+}
+
+/*
+ * PAGE LAYOUT
+ */
+.header {
+    background: #111;
+    color: #fff;
+    text-align: center;
+    padding: 40px 0;
+    font-size: 22px;
+}
+
+.footer {
+    background: #111;
+    padding: 20px 0 25px;
+    font-size: 16px;
+}
+.footer,
+.footer a {
+    color: #fff;
+}
+.container {
+    margin: 0 auto;
+    max-width: 950px;
+    padding: 0 20px;
+}
+.container.body-container {
+    margin: 40px auto 40px;
+}
+
+/*
+ * COMPONENTS
+ */
+.wallet-explanation {
+    margin: 40px 0 10px;
+    padding: 16px 22px;
+    background: #eee;
+    border-radius: 6px;
+}
+.columns {
+    display: flex;
+    margin: 0 -25px;
+}
+.columns .col {
+    flex: 1;
+    width: 50%;
+    padding: 0 25px;
+}
+.form-field {
+    margin: 40px 0;
+}
+.form-field .caption {
+    margin-bottom: 8px;
+}
+.form-field label {
+    display: block;
+    margin-bottom: 4px;
+}
+.form-field label input[type="radio"] {
+    position: relative;
+    top: -3px;
+    margin-right: 12px;
+}
+.form-field input[type="text"] {
+    display: block;
+    width: 100%;
+}
+.form-field .buttons {
+    margin: 14px 0 16px;
+}
+.form-field button {
+    display: block;
+    margin-bottom: 8px;
+}
+.form-field .explanation {
+    color: #aaa;
+    margin-top: 8px;
+}
+.form-field .explanation a {
+    color: #aaa;
+}
+.form-field .explanation a:hover {
+    color: #555;
+}
+.participation-option {
+    display: none;
+}
+.participation-option h3 {
+    margin-top: 0;
+}
+.participation-option pre {
+    width: initial;
+    min-width: none;
+    background: #444;
+    color: #fff;
+    border-radius: 4px;
+    padding: 12px 20px 14px;
+}

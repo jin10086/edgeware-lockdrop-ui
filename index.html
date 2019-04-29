@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Edgeware Lockdrop</title>
+    <meta name="description" content="Interface for participating in the Edgeware lockdrop.">
+    <meta name="author" content="Commonwealth Labs">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/page.js"></script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="container">
+        Edgeware Lockdrop
+      </div>
+    </div>
+    <div class="container body-container">
+      <div class="wallet-explanation">
+        Participate in the Edgeware lockdrop from here. You should
+        already have an EDG wallet with a public address. If you need
+        an EDG wallet, see <a href="#">getting started</a>.
+      </div>
+      <div class="columns">
+        <div class="col">
+          <div class="form-field">
+            <div class="caption">Lockdrop contract address</div>
+            <input type="text" value="" readonly></input>
+            <div class="explanation">
+              Contract audited by Quantstamp. See the <a href="#">audit report</a>,
+              and verify the contract code on <a href="#">Etherscan</a>.
+            </div>
+          </div>
+          <div class="form-field">
+            <div class="caption">EDG address</div>
+            <input type="text" value="" placeholder="Enter your public address here"></input>
+            <div class="explanation">
+              Your EDG will go to this address. Verify this is correct.
+            </div>
+          </div>
+
+          <div class="form-field">
+            <div class="caption">Selection</div>
+            <label><input type="radio" name="locktime" value="lock3" checked></input>Lock 3 months</label>
+            <label><input type="radio" name="locktime" value="lock6"></input>Lock 6 months (+10%)</label>
+            <label><input type="radio" name="locktime" value="lock12"></input>Lock 12 months (+40%)</label>
+            <label><input type="radio" name="locktime" value="signal"></input>Signal (-60%, receive EDG later)</label>
+          </div>
+
+          <div class="form-field">
+            <div class="caption">Validate at network launch</div>
+            <label><input type="radio" name="validator" value="no" checked></input>No</label>
+            <label><input type="radio" name="validator" value="yes"></input>Yes</label>
+            <div class="explanation">
+              Select <strong>yes</strong> to stake your EDG at network
+              launch. This means you must have an online validator
+              node when the genesis block launches, or your balance
+              may be slashed.
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-field">
+            <div class="caption">Submit transaction</div>
+            <div class="buttons">
+              <button class="metamask">Use Metamask</button>
+              <button class="mycrypto">Use MyCrypto</button>
+              <button class="cli">Use lockdrop-cli</button>
+            </div>
+            <div class="explanation">
+              Using a Ledger, Trezor, or Safe-T hardware wallet, or an
+              offline keystore file? Select MyCrypto to continue.
+            </div>
+          </div>
+          <div class="participation-options">
+            <div class="participation-option metamask">
+              <p>
+                You should be prompted by Metamask to sign and send
+                the transaction.
+              </p>
+            </div>
+            <div class="participation-option mycrypto">
+              <h3>Step 1.</h3>
+              <p>
+                For Lacan, the Other is exactly the instance that
+                promises that everything will be fine, that the world
+                is consistent and the promises are kept.
+              </p>
+              <h3>Step 2.</h3>
+              <p>
+                The OS is not exactly the Other of the program, but
+                one of its epigones – the program relies on the
+                promises and consistency of everything, including the
+                OS, the programmers, the math behind the algorithms,
+                the benevolence of the user, etc.
+              </p>
+              <h3>Step 3.</h3>
+              <p>
+                Click 'Send' to submit the transaction.
+              </p>
+            </div>
+            <div class="participation-option cli">
+              <h3>Step 1.</h3>
+              <p>
+                For Lacan, the Other is exactly the instance that
+                promises that everything will be fine, that the world
+                is consistent and the promises are kept.
+              </p>
+              <h3>Step 2.</h3>
+              <p>
+                The OS is not exactly the Other of the program, but
+                one of its epigones. To generate the transaction:
+                <pre>yarn api send 1122334455667788aa</pre>
+              </p>
+              <h3>Step 3.</h3>
+              <p>
+                Click 'Send' to submit the transaction.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="container">
+        &copy; 2019 <span class="i18n">Commonwealth Labs</span>
+      </div>
+    </div>
+  </body>
+</html>
