@@ -1,0 +1,11 @@
+{
+  "name": "edgeware-lockdrop-ui",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/hicommonwealth/edgeware-lockdrop-ui.git",
+  "author": "hello@commonwealth.im",
+  "license": "MIT",
+  "dependencies": {
+    "@ledgerhq/hw-app-eth": "^4.55.0"
+  }
+}

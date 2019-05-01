@@ -1,4 +1,5 @@
 let provider;
+let web3;
 let isValidBase58Input = false;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
@@ -12,7 +13,7 @@ $(function() {
     $('.participation-option.metamask').slideDown(100);
     // Setup ethereum connection and web3 provider
     await enableEthereumConnection();
-    const web3 = setupWeb3Provider();
+    setupWeb3Provider();
 
     // Grab form data
     let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
@@ -39,9 +40,11 @@ $(function() {
       ? 0 : (lockdropLocktimeFormValue === 'lock6')
         ? 1 : 2;
 
-      contract.lock(lockdropLocktime, encodedEdgewareAddress, validatorIntent, {
+      const params = {
         value: web3.toWei(1, 'ether'),
-      }, function(err, txHash) {
+      };
+      // const value = $('#LOCKDROP_LOCK_AMOUNT").val()
+      contract.lock(lockdropLocktime, encodedEdgewareAddress, validatorIntent, params, function(err, txHash) {
         if (err) {
           console.log(err);
         } else {
@@ -49,10 +52,16 @@ $(function() {
         }
       });
     } else {
-      // FIXME: WE NEED THE INPUTS TO PULL CONTRACT ADDRESS AND NONCE FOR CORRESPONDING SIGNALER
-      const nonce = 0;
-      const signalContractAddress = 'THIS WOULD BE A CONTRACT ADDRESS';
-      contract.signal(signalContractAddress, nonce, edgewareBase58Address);
+      // FIXME: Create these inputs for signalers
+      const signalingContractAddress = $('#SIGNALING_CONTRACT_ADDR');
+      const signalingContractNonce = $('#SIGNALING_CONTRACT_NONCE');
+      contract.signal(signalContractAddress, signalingContractNonce, encodedEdgewareAddress, function(err, txHash) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(txHash);
+        }
+      });
     }
   });
   $('button.mycrypto').click(function() {
@@ -64,6 +73,7 @@ $(function() {
     $('.participation-option.cli').slideDown(100);
   });
 });
+
 
 /**
  * Ensure that the input is a formed correctly
@@ -88,7 +98,7 @@ function setupWeb3Provider() {
     provider = window['ethereum'] || window.web3.currentProvider
   }
 
-  return new Web3(provider);
+  web3 = new Web3(provider);
 }
 
 /**
