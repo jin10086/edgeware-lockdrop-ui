@@ -55,7 +55,7 @@ $(function() {
       // FIXME: Create these inputs for signalers
       const signalingContractAddress = $('#SIGNALING_CONTRACT_ADDR');
       const signalingContractNonce = $('#SIGNALING_CONTRACT_NONCE');
-      contract.signal(signalContractAddress, signalingContractNonce, encodedEdgewareAddress, function(err, txHash) {
+      contract.signal(signalingContractAddress, signalingContractNonce, encodedEdgewareAddress, function(err, txHash) {
         if (err) {
           console.log(err);
         } else {
