@@ -1,72 +1,51 @@
-let provider;
-let web3;
-let isValidBase58Input = false;
+let provider, web3, isValidBase58Input;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 $(function() {
   $('#EDGEWARE_BASE58_ADDRESS').change(function(e) {
-    isValidBase58Input = validateBase58Input(e.target.value);
+    isValidBase58Input = validateBase58Input(e.target.value)
+    if (!isValidBase58Input) {
+      alert('Please enter a valid base58 edgeware public address!');
+    }
   });
 
   $('button.metamask').click(async function() {
-    $('.participation-option').hide();
-    $('.participation-option.metamask').slideDown(100);
-    // Setup ethereum connection and web3 provider
-    await enableEthereumConnection();
-    setupWeb3Provider();
-
-    // Grab form data
-    let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
-    let edgewareBase58Address = $('#EDGEWARE_BASE58_ADDRESS').val();
-    let lockdropLocktimeFormValue = $('input[name=locktime]:checked').val();
-    let validatorIntent = $('input[name=validator]:checked').val();
-    // Check base58 input before continuing
     if (!isValidBase58Input) {
       alert('Please enter a valid base58 edgeware public address!');
       return;
-    }
-
-    // Encode Edgeware address in hex for Ethereum transactions
-    const encodedEdgewareAddress = `0x${toHexString(fromB58(edgewareBase58Address))}`;
-
-    // Grab lockdrop JSON and instantiate contract
-    const json = await $.getJSON('Lockdrop.json');
-    const contract = web3.eth.contract(json.abi).at(lockdropContractAddress);
-
-    // Calculate lock term as enum values
-    const signaling = (lockdropLocktimeFormValue === 'signal');
-    if (!signaling) {
-      const lockdropLocktime = (lockdropLocktimeFormValue === 'lock3')
-      ? 0 : (lockdropLocktimeFormValue === 'lock6')
-        ? 1 : 2;
-
-      const params = {
-        value: web3.toWei(1, 'ether'),
-      };
-      // const value = $('#LOCKDROP_LOCK_AMOUNT").val()
-      contract.lock(lockdropLocktime, encodedEdgewareAddress, validatorIntent, params, function(err, txHash) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(txHash);
-        }
-      });
     } else {
-      // FIXME: Create these inputs for signalers
-      const signalingContractAddress = $('#SIGNALING_CONTRACT_ADDR');
-      const signalingContractNonce = $('#SIGNALING_CONTRACT_NONCE');
-      contract.signal(signalingContractAddress, signalingContractNonce, encodedEdgewareAddress, function(err, txHash) {
+      $('.participation-option').hide();
+      $('.participation-option.metamask').slideDown(100);
+      // Setup ethereum connection and web3 provider
+      await enableMetamaskEthereumConnection();
+      setupMetamaskWeb3Provider();
+      // Grab form data
+      let { returnTransaction, params } = await configureTransaction();
+      returnTransaction.send(params, function(err, txHash) {
         if (err) {
+          // Do something with errors
           console.log(err);
         } else {
+          // Do something with results
           console.log(txHash);
         }
       });
     }
   });
-  $('button.mycrypto').click(function() {
-    $('.participation-option').hide();
-    $('.participation-option.mycrypto').slideDown(100);
+  $('button.mycrypto').click(async function() {
+    if (!isValidBase58Input) {
+      alert('Please enter a valid base58 edgeware public address!');
+      return;
+    } else {
+      $('.participation-option').hide();
+      $('.participation-option.mycrypto').slideDown(100);
+      // Setup INFURA web3 provider
+      setupInfuraWeb3Provider();
+      // Grab form data
+      let { returnTransaction } = await configureTransaction();
+      txData = returnTransaction.encodeABI();
+      $('#LOCKDROP_TX_DATA').text(txData);
+    }
   });
   $('button.cli').click(function() {
     $('.participation-option').hide();
@@ -74,6 +53,44 @@ $(function() {
   });
 });
 
+async function configureTransaction(isMetamask) {
+  let returnTransaction, params;
+  let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
+  let edgewareBase58Address = $('#EDGEWARE_BASE58_ADDRESS').val();
+  let lockdropLocktimeFormValue = $('input[name=locktime]:checked').val();
+  let validatorIntent = $('input[name=validator]:checked').val();
+  // Encode Edgeware address in hex for Ethereum transactions
+  const encodedEdgewareAddress = `0x${toHexString(fromB58(edgewareBase58Address))}`;
+  // Grab lockdrop JSON and instantiate contract
+  const json = await $.getJSON('Lockdrop.json');
+  const contract = new web3.eth.Contract(json.abi, lockdropContractAddress);
+  // Switch on transaction type
+  const signaling = (lockdropLocktimeFormValue === 'signal');
+  if (!signaling) {
+    // Calculate lock term as enum values
+    const lockdropLocktime = (lockdropLocktimeFormValue === 'lock3')
+    ? 0 : (lockdropLocktimeFormValue === 'lock6')
+      ? 1 : 2;
+
+    // Params are only needed for sending transactions directly i.e. from Metamask
+    if (isMetamask) {
+      const coinbaseAcct = await web3.eth.getCoinbase();
+      params = {
+        from: coinbaseAcct,
+        value: web3.utils.toWei('1', 'ether'),
+      };
+    }
+    // const value = $('#LOCKDROP_LOCK_AMOUNT").val()
+    returnTransaction = contract.methods.lock(lockdropLocktime, encodedEdgewareAddress, validatorIntent);
+  } else {
+    params = { from: coinbaseAcct };
+    // FIXME: Create these inputs for signalers
+    const signalingContractAddress = $('#SIGNALING_CONTRACT_ADDR');
+    const signalingContractNonce = $('#SIGNALING_CONTRACT_NONCE');
+    returnTransaction = contract.signal(signalingContractAddress, signalingContractNonce, encodedEdgewareAddress);
+  } 
+  return { returnTransaction, params };
+}
 
 /**
  * Ensure that the input is a formed correctly
@@ -91,22 +108,34 @@ function validateBase58Input(input) {
 /**
  * Setup web3 provider using Metamask's injected providers
  */
-function setupWeb3Provider() {
+function setupMetamaskWeb3Provider() {
   // Setup web3 provider
   if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
     // Web3 browser user detected. You can now use the provider.
     provider = window['ethereum'] || window.web3.currentProvider
   }
 
-  web3 = new Web3(provider);
+  web3 = new window.Web3(provider);
+}
+
+/**
+ * Setup web3 provider using Infura Public Gateway
+ */
+function setupInfuraWeb3Provider() {
+  if (typeof web3 !== 'undefined') {
+    web3 = new Web3(web3.currentProvider);
+  } else {
+    // Set the provider you want from Web3.providers
+    web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io'));
+  }
 }
 
 /**
  * Enable connection between browser and Metamask
  */
-async function enableEthereumConnection() {
+async function enableMetamaskEthereumConnection() {
   try {
-    const accounts = await ethereum.enable()
+    await ethereum.enable()
   } catch (error) {
     // Handle error. Likely the user rejected the login:
     console.log(reason === 'User rejected provider access')

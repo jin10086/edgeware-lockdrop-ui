@@ -68,7 +68,7 @@
             <div class="buttons">
               <button class="metamask">Use Metamask</button>
               <button class="mycrypto">Use MyCrypto</button>
-              <button class="cli">Use lockdrop-cli</button>
+              <button class="cli">Use edgeware-lockdrop CLI</button>
             </div>
             <div class="explanation">
               Using a Ledger, Trezor, or Safe-T hardware wallet, or an
@@ -85,39 +85,45 @@
             <div class="participation-option mycrypto">
               <h3>Step 1.</h3>
               <p>
-                For Lacan, the Other is exactly the instance that
-                promises that everything will be fine, that the world
-                is consistent and the promises are kept.
+                Copy the raw transaction data below for your respective lockdrop action.
+                You will need to paste this into MyCrypto's interface.
+                <pre id="LOCKDROP_TX_DATA"></pre>
               </p>
               <h3>Step 2.</h3>
               <p>
-                The OS is not exactly the Other of the program, but
-                one of its epigones – the program relies on the
-                promises and consistency of everything, including the
-                OS, the programmers, the math behind the algorithms,
-                the benevolence of the user, etc.
+                Visit <a href="https://mycrypto.com/account">MyCrypto</a>
+                and select your preferred method of transacting.
+                Select advanced transaction options and input the
+                transaction data above.
               </p>
               <h3>Step 3.</h3>
               <p>
-                Click 'Send' to submit the transaction.
+                If you are locking, input the amount you wish to
+                lock up in the value field on MyCrypto. Signalers
+                should not send any value. Finally, send and sign the
+                transaction on the MyCrypto interface.
               </p>
             </div>
             <div class="participation-option cli">
               <h3>Step 1.</h3>
               <p>
-                For Lacan, the Other is exactly the instance that
-                promises that everything will be fine, that the world
-                is consistent and the promises are kept.
+                Clone the <a href="https://github.com/hicommonwealth/edgeware-lockdrop">edgeware-lockdrop</a>
+                repo locally, refer to the README for questions as well as the structure of the API.
               </p>
               <h3>Step 2.</h3>
               <p>
-                The OS is not exactly the Other of the program, but
-                one of its epigones. To generate the transaction:
-                <pre>yarn api send 1122334455667788aa</pre>
+                You will need to create a <i>.env</i> file in the root directory
+                of the repo, containing the following data.
+                <pre>ETH_PRIVATE_KEY=...
+ETH_ADDRESS=...
+LOCKDROP_CONTRACT_ADDRESS=...</pre>
               </p>
-              <h3>Step 3.</h3>
+              <h3>Examples</h3>
               <p>
-                Click 'Send' to submit the transaction.
+                Locking
+                <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --lock --lockLength 3 --lockValue 0.5 --edgeAddress <BASE58_EDGE_ADDRESS>  --isValidator</pre>
+                Signaling
+                <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --signal <FROM_CONTRACT> --nonce <NONCE_OF_SIGNAL_CONTRACT> --edgeAddress <BASE58_EDGE_ADDRESS> </pre>
               </p>
             </div>
           </div>
@@ -129,5 +135,6 @@
         &copy; 2019 <span class="i18n">Commonwealth Labs</span>
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js" integrity="sha256-nWBTbvxhJgjslRyuAKJHK+XcZPlCnmIAAMixz6EefVk=" crossorigin="anonymous"></script>
   </body>
 </html>
