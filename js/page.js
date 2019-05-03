@@ -2,10 +2,23 @@ let provider, web3, isValidBase58Input;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 $(function() {
-  $('#EDGEWARE_BASE58_ADDRESS').change(function(e) {
-    isValidBase58Input = validateBase58Input(e.target.value)
+  $('#EDGEWARE_BASE58_ADDRESS').on('input', function(e) {
+    isValidBase58Input = validateBase58Input(e.target.value);
     if (!isValidBase58Input) {
       alert('Please enter a valid base58 edgeware public address!');
+    }
+  });
+  $('input[name="locktime"]').change(function(e) {
+    var val = $('input[name="locktime"]:checked').val();
+    if (val === 'signal') {
+      $('.form-field-locking').hide();
+      $('.form-field-signaling').fadeIn('fast').css({ display: 'flex'});
+    } else if (val.startsWith('lock')) {
+      $('.form-field-locking').fadeIn('fast').css({ display: 'flex'});
+      $('.form-field-signaling').hide();
+    } else {
+      $('.form-field-locking').hide();
+      $('.form-field-signaling').hide();
     }
   });
 
@@ -20,7 +33,7 @@ $(function() {
       await enableMetamaskEthereumConnection();
       setupMetamaskWeb3Provider();
       // Grab form data
-      let { returnTransaction, params } = await configureTransaction();
+      let { returnTransaction, params } = await configureTransaction(true);
       returnTransaction.send(params, function(err, txHash) {
         if (err) {
           // Do something with errors
@@ -48,6 +61,10 @@ $(function() {
     }
   });
   $('button.cli').click(function() {
+    if (!isValidBase58Input) {
+      alert('Please enter a valid base58 edgeware public address!');
+      return;
+    }
     $('.participation-option').hide();
     $('.participation-option.cli').slideDown(100);
   });
@@ -60,7 +77,7 @@ async function configureTransaction(isMetamask) {
   let lockdropLocktimeFormValue = $('input[name=locktime]:checked').val();
   let validatorIntent = $('input[name=validator]:checked').val();
   // Encode Edgeware address in hex for Ethereum transactions
-  const encodedEdgewareAddress = `0x${toHexString(fromB58(edgewareBase58Address))}`;
+  const encodedEdgewareAddress = '0x' + toHexString(fromB58(edgewareBase58Address));
   // Grab lockdrop JSON and instantiate contract
   const json = await $.getJSON('Lockdrop.json');
   const contract = new web3.eth.Contract(json.abi, lockdropContractAddress);
@@ -88,13 +105,13 @@ async function configureTransaction(isMetamask) {
     const signalingContractAddress = $('#SIGNALING_CONTRACT_ADDR');
     const signalingContractNonce = $('#SIGNALING_CONTRACT_NONCE');
     returnTransaction = contract.signal(signalingContractAddress, signalingContractNonce, encodedEdgewareAddress);
-  } 
+  }
   return { returnTransaction, params };
 }
 
 /**
  * Ensure that the input is a formed correctly
- * @param {String} input 
+ * @param {String} input
  */
 function validateBase58Input(input) {
   for (inx in input) {
