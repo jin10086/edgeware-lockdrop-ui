@@ -2,10 +2,23 @@ let provider, web3, isValidBase58Input;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 $(function() {
-  $('#EDGEWARE_BASE58_ADDRESS').change(function(e) {
-    isValidBase58Input = validateBase58Input(e.target.value)
+  $('#EDGEWARE_BASE58_ADDRESS').on('input', function(e) {
+    isValidBase58Input = validateBase58Input(e.target.value);
     if (!isValidBase58Input) {
       alert('Please enter a valid base58 edgeware public address!');
+    }
+  });
+  $('input[name="locktime"]').change(function(e) {
+    var val = $('input[name="locktime"]:checked').val();
+    if (val === 'signal') {
+      $('.form-field-locking').hide();
+      $('.form-field-signaling').fadeIn('fast').css({ display: 'flex'});
+    } else if (val.startsWith('lock')) {
+      $('.form-field-locking').fadeIn('fast').css({ display: 'flex'});
+      $('.form-field-signaling').hide();
+    } else {
+      $('.form-field-locking').hide();
+      $('.form-field-signaling').hide();
     }
   });
 
@@ -20,7 +33,9 @@ $(function() {
       await enableMetamaskEthereumConnection();
       setupMetamaskWeb3Provider();
       // Grab form data
-      let { returnTransaction, params } = await configureTransaction();
+      let { returnTransaction, params, failure, reason } = await configureTransaction(true);
+      if (failure) alert(reason);
+      // Send transaction if successfully configured transaction
       returnTransaction.send(params, function(err, txHash) {
         if (err) {
           // Do something with errors
@@ -42,19 +57,35 @@ $(function() {
       // Setup INFURA web3 provider
       setupInfuraWeb3Provider();
       // Grab form data
-      let { returnTransaction } = await configureTransaction();
-      txData = returnTransaction.encodeABI();
-      $('#LOCKDROP_TX_DATA').text(txData);
+      let { returnTransaction, failure, reason } = await configureTransaction(false);
+      // Check for failure in cases of signaling for MyCrypto
+      if (failure) {
+        alert(reason);
+      } else {
+        txData = returnTransaction.encodeABI();
+        $('#LOCKDROP_TX_DATA').text(txData);
+      }
     }
   });
   $('button.cli').click(function() {
+    if (!isValidBase58Input) {
+      alert('Please enter a valid base58 edgeware public address!');
+      return;
+    }
     $('.participation-option').hide();
     $('.participation-option.cli').slideDown(100);
+    let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
     let edgewareBase58Address = $('#EDGEWARE_BASE58_ADDRESS').val();
-    console.log(edgewareBase58Address);
-    const dotenv = `ETH_PRIVATE_KEY=0xETHPRIVATEKEY
-ETH_ADDRESS=0xETHADDRESS
-LOCKDROP_CONTRACT_ADDRESS=0xLOCKDROP
+    const dotenv = `# ETH config
+ETH_PRIVATE_KEY=<ENTER_YOUR_PRIVATE_KEY_HEX_HERE>
+
+# Node/provider config
+INFURA_PATH=v3/<INSERT_INFURA_API_KEY_HERE>
+
+# Lockdrop config
+LOCKDROP_CONTRACT_ADDRESS=${lockdropContractAddress}
+
+# Edgeware config
 EDGEWARE_PUBLIC_ADDRESS=${edgewareBase58Address}`;
     $('#LOCKDROP_DOTENV').text(dotenv);
   });
@@ -71,13 +102,15 @@ EDGEWARE_PUBLIC_ADDRESS=${edgewareBase58Address}`;
 });
 
 async function configureTransaction(isMetamask) {
-  let returnTransaction, params;
+  let failure = false;
+  let returnTransaction, params, reason;
+
   let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
   let edgewareBase58Address = $('#EDGEWARE_BASE58_ADDRESS').val();
   let lockdropLocktimeFormValue = $('input[name=locktime]:checked').val();
   let validatorIntent = $('input[name=validator]:checked').val();
   // Encode Edgeware address in hex for Ethereum transactions
-  const encodedEdgewareAddress = `0x${toHexString(fromB58(edgewareBase58Address))}`;
+  const encodedEdgewareAddress = '0x' + toHexString(fromB58(edgewareBase58Address));
   // Grab lockdrop JSON and instantiate contract
   const json = await $.getJSON('Lockdrop.json');
   const contract = new web3.eth.Contract(json.abi, lockdropContractAddress);
@@ -100,18 +133,32 @@ async function configureTransaction(isMetamask) {
     // const value = $('#LOCKDROP_LOCK_AMOUNT").val()
     returnTransaction = contract.methods.lock(lockdropLocktime, encodedEdgewareAddress, validatorIntent);
   } else {
-    params = { from: coinbaseAcct };
+    if (isMetamask) {
+      const coinbaseAcct = await web3.eth.getCoinbase();
+      params = { from: coinbaseAcct };
+    }
+
     // FIXME: Create these inputs for signalers
-    const signalingContractAddress = $('#SIGNALING_CONTRACT_ADDR');
-    const signalingContractNonce = $('#SIGNALING_CONTRACT_NONCE');
-    returnTransaction = contract.signal(signalingContractAddress, signalingContractNonce, encodedEdgewareAddress);
-  } 
-  return { returnTransaction, params };
+    let signalingContractAddress = $('#SIGNALING_CONTRACT_ADDR').val();
+    let signalingContractNonce = $('#SIGNALING_CONTRACT_NONCE').val();
+
+    let res = validateContractAddress(signalingContractAddress, signalingContractNonce);
+    if (!isMetamask && res.failure) {
+      console.log(isMetamask);
+      return res;
+    } else {
+      signalingContractAddress = signalingContractAddress || params.from;
+      signalingContractNonce = signalingContractNonce || 0;
+    }
+
+    returnTransaction = contract.methods.signal(signalingContractAddress, signalingContractNonce, encodedEdgewareAddress);
+  }
+  return { returnTransaction, params, failure, reason };
 }
 
 /**
  * Ensure that the input is a formed correctly
- * @param {String} input 
+ * @param {String} input
  */
 function validateBase58Input(input) {
   // Keys should be formatted as '5GYyKi34emBk54Tf6t3xRgq71x8jRVLykaQqwkJKP76pGwry'
@@ -123,6 +170,42 @@ function validateBase58Input(input) {
     }
   }
   return true;
+}
+
+/**
+ * Ensure that the contract address and nonce are properly formatted
+ * @param {String} input
+ */
+function validateContractAddress(contractAddress, nonce) {
+  if (!contractAddress || !nonce) {
+    return {
+      failure: true,
+      reason: 'No signaling contract or nonce provided for generating tx data',
+    };
+  }
+
+  if (isNaN(nonce)) {
+    return {
+      failure: true,
+      reason: 'Nonce must be an integer',
+    };
+  }
+
+  if (contractAddress.indexOf('0x') > 0 && contractAddress.length !== 42) {
+    return {
+      failure: true,
+      reason: 'Contract address is not valid, it contains 0x but must by 20 bytes in length',
+    };
+  }
+
+  if (contractAddress.indexOf('0x') === -1 && contractAddress.length !== 40) {
+    return {
+      failure: true,
+      reason: 'Contract address is not valid, it does not contain 0x nor is it 20 bytes',
+    };
+  }
+
+  return { failure: false };
 }
 
 /**

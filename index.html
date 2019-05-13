@@ -20,112 +20,143 @@
     </div>
     <div class="container body-container">
       <div class="wallet-explanation">
-        If you're new to the Edgeware Lockdrop, visit
+        Participate in the Edgeware lockdrop from here. If you're new to the Edgeware Lockdrop, visit
         <a href="https://edgeware.ghost.io/ghost/#/editor/post/5cd6c67b5fc6ab00cccbc2cb" target="_blank">this page</a>
-        to read more about it and more instructions for participating. If you
+        to read more about it and for instructions to participate. If you
         need an EDG wallet, see <a href="gettingstarted.html" target="_blank">getting started</a>.
+        <noscript>
+          <br/>
+          This page requires JavaScript.
+        </noscript>
       </div>
-      <div class="columns">
-        <div class="col">
-          <div class="form-field">
-            <div class="caption">Lockdrop contract address</div>
-            <input id="LOCKDROP_CONTRACT_ADDRESS" type="text" value="0x61D4e7BC9b710cD5A2B505Cb427bF54ccDe20863" readonly></input>
-            <div class="explanation">
-              Contract audited by Quantstamp. See the <a href="#">audit report</a>,
-              and verify the contract code on <a href="#">Etherscan</a>.
-            </div>
-          </div>
-          <div class="form-field">
-            <div class="caption">EDG address</div>
-            <input id="EDGEWARE_BASE58_ADDRESS" type="text" value="" placeholder="Enter your public address here"></input>
-            <div class="explanation">
-              Your EDG will go to this address. Verify this is correct.
-            </div>
-          </div>
-
-          <div class="form-field">
-            <div class="caption">Selection</div>
-            <label><input type="radio" name="locktime" value="lock3" checked></input>Lock 3 months</label>
-            <label><input type="radio" name="locktime" value="lock6"></input>Lock 6 months (+10%)</label>
-            <label><input type="radio" name="locktime" value="lock12"></input>Lock 12 months (+40%)</label>
-            <label><input type="radio" name="locktime" value="signal"></input>Signal (-60%, receive EDG later)</label>
-          </div>
-
-          <div class="form-field">
-            <div class="caption">Validate at network launch</div>
-            <label><input type="radio" name="validator" value="no" checked></input>No</label>
-            <label><input type="radio" name="validator" value="yes"></input>Yes</label>
-            <div class="explanation">
-              Select <strong>yes</strong> to stake your EDG at network
-              launch. This means you must have an online validator
-              node when the genesis block launches, or your balance
-              may be slashed.
-            </div>
+      <div class="form-field">
+        <div class="form-left">
+          <div class="caption">Lockdrop contract address</div>
+          <input id="LOCKDROP_CONTRACT_ADDRESS" type="text" value="0x61D4e7BC9b710cD5A2B505Cb427bF54ccDe20863" readonly></input>
+        </div>
+        <div class="explanation">
+          Contract audited by Quantstamp. See the <a href="#" target="_blank">audit report</a>,
+          and verify the code on <a href="#" target="_blank">Etherscan</a>.
+        </div>
+      </div>
+      <div class="form-field">
+        <div class="form-left">
+          <div class="caption">EDG address</div>
+          <input id="EDGEWARE_BASE58_ADDRESS" type="text" value=""
+                 placeholder="Enter your public address here (e.g. 5E1d...)"></input>
+        </div>
+        <div class="explanation">
+          Your EDG will go to this address. Double-check this is correct when the transaction is submitted.
+          If you do not have an EDG address, create one using one of the options <a href="gettingstarted.html" target="_blank">here</a>
+        </div>
+      </div>
+      <div class="form-field">
+        <div class="form-left">
+          <div class="caption">Selection</div>
+          <label><input type="radio" name="locktime" value="lock3"></input>Lock 3 months</label>
+          <label><input type="radio" name="locktime" value="lock6"></input>Lock 6 months (+10%)</label>
+          <label><input type="radio" name="locktime" value="lock12"></input>Lock 12 months (+40%)</label>
+          <label><input type="radio" name="locktime" value="signal"></input>Signal (-60%, receive EDG later)</label>
+        </div>
+        <div class="explanation">
+          If you want to be eligible to run a validator node at the genesis block, you must select Lock.
+        </div>
+      </div>
+      <div class="form-field form-field-locking">
+        <div class="form-left">
+          <div class="caption">Validate at network launch</div>
+          <label><input type="radio" name="validator" value="no" checked></input>No</label>
+          <label><input type="radio" name="validator" value="yes"></input>Yes</label>
+        </div>
+        <div class="explanation">
+          Select <strong>yes</strong> to stake your EDG at network
+          launch. This will require you to have a validator node online
+          when the genesis block launches.
+        </div>
+      </div>
+      <div class="form-field form-field-signaling">
+        <div class="form-left">
+          <div class="caption">Signalled contract address (optional)</div>
+          <input id="SIGNALING_CONTRACT_ADDR" type="text" placeholder="Enter contract address here"></input>
+        </div>
+        <div class="explanation">
+          You may signal the balance of a smart contract you have created.
+          If no contract is provided, ensure a default address is available
+          through metamask.
+        </div>
+      </div>
+      <div class="form-field form-field-signaling">
+        <div class="form-left">
+          <div class="caption">Signalled contract nonce (optional)</div>
+          <input id="SIGNALING_CONTRACT_NONCE" type="text" placeholder="Enter contract nonce here"></input>
+        </div>
+        <div class="explanation">
+          You must provide the nonce that was used when the contract was created, if you are signaling a contract.
+          If you omit this, it is assumed you are signaling from your default address in Metamask. Anything else will fail.
+        </div>
+      </div>
+      <div class="form-field">
+        <div class="form-left">
+          <div class="caption">Submit transaction</div>
+          <div class="buttons">
+            <button class="metamask">Use Metamask</button>
+            <button class="mycrypto">Use MyCrypto</button>
+            <button class="cli">Use edgeware-lockdrop CLI</button>
           </div>
         </div>
-        <div class="col">
-          <div class="form-field">
-            <div class="caption">Submit transaction</div>
-            <div class="buttons">
-              <button class="metamask">Use Metamask</button>
-              <button class="mycrypto">Use MyCrypto</button>
-              <button class="cli">Use edgeware-lockdrop CLI</button>
-            </div>
-            <div class="explanation">
-              Using a Ledger, Trezor, or Safe-T hardware wallet, or an
-              offline keystore file? Select Metamask or MyCrypto to continue.
-            </div>
-          </div>
-          <div class="participation-options">
-            <div class="participation-option metamask">
-              <p>
-                You should be prompted by Metamask to sign and send
-                the transaction.
-              </p>
-            </div>
-            <div class="participation-option mycrypto">
-              <h3>Step 1.</h3>
-              <p>
-                Copy the raw transaction data below for your respective lockdrop action.
-                You will need to paste this into MyCrypto's interface.
-                <pre id="LOCKDROP_TX_DATA"></pre>
-              </p>
-              <h3>Step 2.</h3>
-              <p>
-                Visit <a href="https://mycrypto.com/account">MyCrypto</a>
-                and select your preferred method of transacting.
-                Select advanced transaction options and input the
-                transaction data above.
-              </p>
-              <h3>Step 3.</h3>
-              <p>
-                If you are locking, input the amount you wish to
-                lock up in the value field on MyCrypto. Signalers
-                should not send any value. Finally, send and sign the
-                transaction on the MyCrypto interface.
-              </p>
-            </div>
-            <div class="participation-option cli">
-              <h3>Step 1.</h3>
-              <p>
-                Clone the <a href="https://github.com/hicommonwealth/edgeware-lockdrop">edgeware-lockdrop</a>
-                repo locally, refer to the README for questions as well as the structure of the API.
-              </p>
-              <h3>Step 2.</h3>
-              <p>
-                You will need to create a <i>.env</i> file in the root directory
-                of the repo, containing the following data.
-                <pre id="LOCKDROP_DOTENV"></pre>
-              </p>
-              <h3>Examples</h3>
-              <p>
-                Locking
-                <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --lock --lockLength 3 --lockValue 0.5 --edgeAddress <BASE58_EDGE_ADDRESS>  --isValidator</pre>
-                Signaling
-                <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --signal <FROM_CONTRACT> --nonce <NONCE_OF_SIGNAL_CONTRACT> --edgeAddress <BASE58_EDGE_ADDRESS> </pre>
-              </p>
-            </div>
-          </div>
+        <div class="explanation">
+          Select MyCrypto if you are using a Ledger, Trezor, or Safe-T
+          hardware wallet, or an offline keystore file.
+        </div>
+      </div>
+      <div class="participation-options">
+        <div class="participation-option metamask">
+          <p>
+            You should be prompted by Metamask to sign and send
+            the transaction.
+          </p>
+        </div>
+        <div class="participation-option mycrypto">
+          <h3>Step 1.</h3>
+          <p>
+            Copy the raw transaction data below for your respective lockdrop action.
+            You will need to paste this into MyCrypto's interface.
+            <pre id="LOCKDROP_TX_DATA"></pre>
+          </p>
+          <h3>Step 2.</h3>
+          <p>
+            Visit <a href="https://mycrypto.com/account">MyCrypto</a>
+            and select your preferred method of transacting.
+            Select advanced transaction options and input the
+            transaction data above.
+          </p>
+          <h3>Step 3.</h3>
+          <p>
+            If you are locking, input the amount you wish to
+            lock up in the value field on MyCrypto. Signalers
+            should not send any value. Finally, send and sign the
+            transaction on the MyCrypto interface.
+          </p>
+        </div>
+        <div class="participation-option cli">
+          <h3>Step 1.</h3>
+          <p>
+            Clone the <a href="https://github.com/hicommonwealth/edgeware-lockdrop">edgeware-lockdrop</a>
+            repo locally, refer to the README for questions as well as the structure of the API.
+          </p>
+          <h3>Step 2.</h3>
+            <p>
+              You will need to create a <i>.env</i> file in the root directory
+              of the repo, containing the following data.
+              <pre id="LOCKDROP_DOTENV"></pre>
+            </p>
+          <h3>Examples</h3>
+          <p>
+            Locking
+            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --lock --lockLength 3 --lockValue 0.5 --edgeAddress <BASE58_EDGE_ADDRESS>  --isValidator</pre>
+            Signaling
+            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --signal <FROM_CONTRACT> --nonce <NONCE_OF_SIGNAL_CONTRACT> --edgeAddress <BASE58_EDGE_ADDRESS> </pre>
+          </p>
         </div>
       </div>
     </div>
