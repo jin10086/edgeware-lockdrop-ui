@@ -50,6 +50,23 @@ $(function() {
   $('button.cli').click(function() {
     $('.participation-option').hide();
     $('.participation-option.cli').slideDown(100);
+    let edgewareBase58Address = $('#EDGEWARE_BASE58_ADDRESS').val();
+    console.log(edgewareBase58Address);
+    const dotenv = `ETH_PRIVATE_KEY=0xETHPRIVATEKEY
+ETH_ADDRESS=0xETHADDRESS
+LOCKDROP_CONTRACT_ADDRESS=0xLOCKDROP
+EDGEWARE_PUBLIC_ADDRESS=${edgewareBase58Address}`;
+    $('#LOCKDROP_DOTENV').text(dotenv);
+  });
+
+  $('button.commonwealth-ui').click(function() {
+    $('.generate-option').hide();
+    $('.generate-option.commonwealth-ui').slideDown(100);
+  });
+
+  $('button.rust').click(function() {
+    $('.generate-option').hide();
+    $('.generate-option.rust').slideDown(100);
   });
 });
 
@@ -97,6 +114,9 @@ async function configureTransaction(isMetamask) {
  * @param {String} input 
  */
 function validateBase58Input(input) {
+  // Keys should be formatted as '5GYyKi34emBk54Tf6t3xRgq71x8jRVLykaQqwkJKP76pGwry'
+  if (input.length != 48) return false;
+
   for (inx in input) {
     if (BASE58_ALPHABET.indexOf(input[inx]) == -1) {
       return false;

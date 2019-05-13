@@ -1,0 +1,76 @@
+<html><!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Edgeware Lockdrop</title>
+    <meta name="description" content="Interface for participating in the Edgeware lockdrop.">
+    <meta name="author" content="Commonwealth Labs">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/page.js"></script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="container">
+        Edgeware Lockdrop
+      </div>
+    </div>
+    <div class="container body-container">
+      <div class="wallet-explanation">
+        There are two methods of generating a keypair - using Rust on the command line or through the Commonwealth UI.
+      </div>
+      <div class="columns">
+        <div class="col">
+          <div class="form-field">
+            <div class="caption">Select keypair generation method</div>
+            <div class="buttons">
+              <button class="commonwealth-ui">Use the Commonwealth UI</button>
+              <button class="rust">Use rust and cargo</button>
+            </div>
+            <div class="explanation">
+              Select an option to see instructions for generating
+              keypairs using the selected method.
+            </div>
+          </div>          
+          <div class="generate-options">
+            <div class="generate-option commonwealth-ui">
+              <ul>
+                <li>Go to the <a href="https://staging.commonwealth.im/#!/" target="_blank">Commonwealth UI</a></li>
+                <li>Click <b>"Create Account"</b> in the top right corner</li>
+                <li>Enter an email address or use a Github account to login</li>
+                <li>Save the account mnemonic somewhere safe as the UI instructs</li>
+                <li>Copy the Base58 generated public address for use on the Edgeware Lockdrop homepage</li>
+              </ul>
+            </div>
+            <div class="generate-option rust">
+              <ul>
+                <li>
+                  Install rust and cargo by running the following script
+                  in a command shell <pre>curl https://sh.rustup.rs -sSf | sh</pre>
+                </li>
+                <li>
+                  Execute the following script once cargo is installed
+                  <pre>cargo install --force --git https://github.com/paritytech/substrate subkey</pre>
+                </li>
+                <li>
+                  Create an account by running the following command
+                  <pre>subkey generate</pre>
+                  Save the output somewhere safe, it contains your secret mnemonic
+                  to generate future keypairs. It should look like the following.
+                  <pre>Phrase `welcome draft actor now search injury enhance cigar misery move december essay` is account:
+  Seed: 0xa2cc1ebe0a6cb0ae78311cd37156aac988e61c312d73cafe357cc2f1fd069e09
+  Public key (hex): 0xb2d1bda2d363cf25a26a9fb34ea314dc8981e378ca4797c52117f65731602826
+  Address (SS58): 5G7AgnBBNvdDYRVvcCYz95pMjGtS3ouWaq23Dcqe6rDjDuh7</pre>
+                </li>
+                <li>Copy the Base58 generated public address for use on the Edgeware Lockdrop homepage</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
