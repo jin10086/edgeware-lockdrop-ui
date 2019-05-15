@@ -193,18 +193,3 @@ input[type="submit"]:active {
     border-radius: 4px;
     padding: 12px 20px 14px;
 }
-
-.generate-option {
-    display: none;
-}
-.generate-option h3 {
-    margin-top: 0;
-}
-.generate-option pre {
-    width: initial;
-    min-width: none;
-    background: #444;
-    color: #fff;
-    border-radius: 4px;
-    padding: 12px 20px 14px;
-}
