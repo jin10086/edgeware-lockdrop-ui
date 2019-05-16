@@ -11,14 +11,14 @@ $(function() {
   $('input[name="locktime"]').change(function(e) {
     var val = $('input[name="locktime"]:checked').val();
     if (val === 'signal') {
-      $('.form-field-locking').hide();
-      $('.form-field-signaling').fadeIn('fast').css({ display: 'flex'});
+      $('.body-container').removeClass('locking');
+      $('.body-container').addClass('signaling');
     } else if (val.startsWith('lock')) {
-      $('.form-field-locking').fadeIn('fast').css({ display: 'flex'});
-      $('.form-field-signaling').hide();
+      $('.body-container').addClass('locking');
+      $('.body-container').removeClass('signaling');
     } else {
-      $('.form-field-locking').hide();
-      $('.form-field-signaling').hide();
+      $('.body-container').removeClass('locking');
+      $('.body-container').removeClass('signaling');
     }
   });
 
