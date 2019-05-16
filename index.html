@@ -32,7 +32,7 @@
       <div class="form-field">
         <div class="form-left">
           <div class="caption">Lockdrop contract address</div>
-          <input id="LOCKDROP_CONTRACT_ADDRESS" type="text" value="0x61D4e7BC9b710cD5A2B505Cb427bF54ccDe20863" readonly></input>
+          <input id="LOCKDROP_CONTRACT_ADDRESS" type="text" value="0x1b75b90e60070d37cfa9d87affd124bb345bf70a" readonly></input>
         </div>
         <div class="explanation">
           Contract audited by Quantstamp. See the <a href="#" target="_blank">audit report</a>,
@@ -152,10 +152,10 @@
             </p>
           <h3>Examples</h3>
           <p>
-            Locking
-            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --lock --lockLength 3 --lockValue 0.5 --edgeAddress <BASE58_EDGE_ADDRESS>  --isValidator</pre>
-            Signaling
-            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --signal <FROM_CONTRACT> --nonce <NONCE_OF_SIGNAL_CONTRACT> --edgeAddress <BASE58_EDGE_ADDRESS> </pre>
+            Locking 0.5 ETH for 3 months
+            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --lock --lockLength 3 --lockValue 0.5 --edgeAddress $BASE58_EDGE_ADDRESS --isValidator</pre>
+            Signaling from a specified contract with a specified nonce
+            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --signal $FROM_CONTRACT --nonce $NONCE_OF_SIGNAL_CONTRACT --edgeAddress $BASE58_EDGE_ADDRESS</pre>
           </p>
         </div>
       </div>
