@@ -29,6 +29,14 @@ p {
 a {
     color: #111;
 }
+pre {
+    width: initial;
+    min-width: none;
+    background: #444;
+    color: #fff;
+    border-radius: 4px;
+    padding: 12px 20px 14px;
+}
 .button-text {
     display: inline-block;
     color: #aaa;
@@ -117,7 +125,7 @@ input[type="submit"]:active {
     padding: 0 20px;
 }
 .container.body-container {
-    margin: 40px auto 40px;
+    margin: 40px auto 80px;
 }
 
 /*
@@ -161,6 +169,9 @@ input[type="submit"]:active {
     display: block;
     width: 100%;
 }
+.form-field input[type="text"][readonly] {
+    background: #f8f8f8;
+}
 .form-field .buttons {
     margin: 14px 0 16px;
 }
@@ -184,12 +195,4 @@ input[type="submit"]:active {
 }
 .participation-option h3 {
     margin-top: 0;
-}
-.participation-option pre {
-    width: initial;
-    min-width: none;
-    background: #444;
-    color: #fff;
-    border-radius: 4px;
-    padding: 12px 20px 14px;
 }
