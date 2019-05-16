@@ -2,9 +2,9 @@ let provider, web3, isValidBase58Input;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 $(function() {
-  $('#EDGEWARE_BASE58_ADDRESS').on('input', function(e) {
+  $('#EDGEWARE_BASE58_ADDRESS').on('blur', function(e) {
     isValidBase58Input = validateBase58Input(e.target.value);
-    if (!isValidBase58Input) {
+    if (e.target.value !== '' && !isValidBase58Input) {
       alert('Please enter a valid base58 edgeware public address!');
     }
   });
@@ -107,8 +107,15 @@ async function configureTransaction(isMetamask) {
 
   let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
   let edgewareBase58Address = $('#EDGEWARE_BASE58_ADDRESS').val();
+  let ethLockAmount = $('#ETH_LOCK_AMOUNT').val();
   let lockdropLocktimeFormValue = $('input[name=locktime]:checked').val();
   let validatorIntent = $('input[name=validator]:checked').val();
+
+  if (isNaN(+ethLockAmount) || +ethLockAmount <= 0) {
+    alert('Please enter a valid ETH amount!');
+    return;
+  }
+
   // Encode Edgeware address in hex for Ethereum transactions
   const encodedEdgewareAddress = '0x' + toHexString(fromB58(edgewareBase58Address));
   // Grab lockdrop JSON and instantiate contract
@@ -127,10 +134,9 @@ async function configureTransaction(isMetamask) {
       const coinbaseAcct = await web3.eth.getCoinbase();
       params = {
         from: coinbaseAcct,
-        value: web3.utils.toWei('1', 'ether'),
+        value: web3.utils.toWei(ethLockAmount, 'ether'),
       };
     }
-    // const value = $('#LOCKDROP_LOCK_AMOUNT").val()
     returnTransaction = contract.methods.lock(lockdropLocktime, encodedEdgewareAddress, validatorIntent);
   } else {
     if (isMetamask) {
