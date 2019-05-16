@@ -20,10 +20,9 @@
     </div>
     <div class="container body-container">
       <div class="wallet-explanation">
-        Participate in the Edgeware lockdrop from here. If you're new to the Edgeware Lockdrop, visit
-        <a href="https://edgeware.ghost.io/ghost/#/editor/post/5cd6c67b5fc6ab00cccbc2cb" target="_blank">this page</a>
-        to read more about it and for instructions to participate. If you
-        need an EDG wallet, see <a href="gettingstarted.html" target="_blank">getting started</a>.
+        If you're new to the Edgeware Lockdrop, read more on
+        <a href="https://blog.edgewa.re/important-updates-to-the-edgeware-lockdrop/" target="_blank">our blog</a>. If you
+        need an EDG address, see the <a href="gettingstarted.html" target="_blank">instructions</a>.
         <noscript>
           <br/>
           This page requires JavaScript.
@@ -35,31 +34,42 @@
           <input id="LOCKDROP_CONTRACT_ADDRESS" type="text" value="0x1b75b90e60070d37cfa9d87affd124bb345bf70a" readonly></input>
         </div>
         <div class="explanation">
-          Contract audited by Quantstamp. See the <a href="#" target="_blank">audit report</a>,
-          and verify the code on <a href="#" target="_blank">Etherscan</a>.
+          Contract audited by <a href="#" target="_blank">Quantstamp</a>.
+          Verify the code on <a href="https://etherscan.io/address/0x1b75b90e60070d37cfa9d87affd124bb345bf70a" target="_blank">Etherscan</a>.
         </div>
       </div>
       <div class="form-field">
         <div class="form-left">
           <div class="caption">EDG address</div>
           <input id="EDGEWARE_BASE58_ADDRESS" type="text" value=""
-                 placeholder="Enter your public address here (e.g. 5E1d...)"></input>
+                 placeholder="Public EDG address (e.g. 5E1d...)"></input>
         </div>
         <div class="explanation">
-          Your EDG will go to this address. Double-check this is correct when the transaction is submitted.
-          If you do not have an EDG address, create one using one of the options <a href="gettingstarted.html" target="_blank">here</a>
+          Your EDG will go to this address.
+          If you do not have an EDG address, create one using the <a href="gettingstarted.html" target="_blank">instructions</a>.
         </div>
       </div>
       <div class="form-field">
         <div class="form-left">
           <div class="caption">Selection</div>
           <label><input type="radio" name="locktime" value="lock3"></input>Lock 3 months</label>
-          <label><input type="radio" name="locktime" value="lock6"></input>Lock 6 months (+10%)</label>
-          <label><input type="radio" name="locktime" value="lock12"></input>Lock 12 months (+40%)</label>
-          <label><input type="radio" name="locktime" value="signal"></input>Signal (-60%, receive EDG later)</label>
+          <label><input type="radio" name="locktime" value="lock6"></input>Lock 6 months (+30%)</label>
+          <label><input type="radio" name="locktime" value="lock12"></input>Lock 12 months (+120%)</label>
+          <label><input type="radio" name="locktime" value="signal"></input>Signal (-80%, receive 75% of EDG in 1 year)</label>
         </div>
         <div class="explanation">
-          If you want to be eligible to run a validator node at the genesis block, you must select Lock.
+          <p>If you want to be eligible to run a validator node at the genesis block, you must select Lock.</p>
+          <p>Note that any <a href="https://blog.edgewa.re/important-updates-to-the-edgeware-lockdrop/" target="_blank">early locking bonuses</a> are applied on top of bonuses for lock period.</p>
+        </div>
+      </div>
+      <div class="form-field form-field-locking">
+        <div class="form-left">
+          <div class="caption">Lock amount</div>
+          <input id="ETH_LOCK_AMOUNT" type="text" value=""
+                 placeholder="Amount of ETH to lock"></input>
+        </div>
+        <div class="explanation">
+          The amount of ETH you are locking.
         </div>
       </div>
       <div class="form-field form-field-locking">
@@ -80,9 +90,9 @@
           <input id="SIGNALING_CONTRACT_ADDR" type="text" placeholder="Enter contract address here"></input>
         </div>
         <div class="explanation">
-          You may signal the balance of a smart contract you have created.
-          If no contract is provided, ensure a default address is available
-          through metamask.
+          You may signal the balance of a contract you have created.
+          If none is provided, ensure a default address is available
+          through Metamask.
         </div>
       </div>
       <div class="form-field form-field-signaling">
@@ -91,8 +101,7 @@
           <input id="SIGNALING_CONTRACT_NONCE" type="text" placeholder="Enter contract nonce here"></input>
         </div>
         <div class="explanation">
-          You must provide the nonce that was used when the contract was created, if you are signaling a contract.
-          If you omit this, it is assumed you are signaling from your default address in Metamask. Anything else will fail.
+          If you are signaling a contract, You must provide the nonce used when the contract was created. If you omit this, it is assumed you are signaling from your default address in Metamask. Anything else will fail.
         </div>
       </div>
       <div class="form-field">
