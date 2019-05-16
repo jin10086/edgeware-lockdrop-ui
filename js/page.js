@@ -8,6 +8,21 @@ $(function() {
       alert('Please enter a valid base58 edgeware public address!');
     }
   });
+
+  $('input[name="network"]').change(function(e) {
+    let network = $('input[name="network"]:checked').val();
+    let mainnet = '0x1b75b90e60070d37cfa9d87affd124bb345bf70a';
+    let ropsten = '0x5940864331bBB57a10FC55e72d88299D2Dce209C';
+    console.log(network);
+    if (network === 'mainnet') {
+      $('#LOCKDROP_CONTRACT_ADDRESS').text(mainnet);
+    } else if (network === 'ropsten') {
+      $('#LOCKDROP_CONTRACT_ADDRESS').text(ropsten);
+    } else {
+      $('#LOCKDROP_CONTRACT_ADDRESS').text(mainnet);
+    }
+  });
+
   $('input[name="locktime"]').change(function(e) {
     var val = $('input[name="locktime"]:checked').val();
     if (val === 'signal') {
