@@ -1,5 +1,7 @@
 let provider, web3, isValidBase58Input;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const MAINNET_LOCKDROP = '0x1b75b90e60070d37cfa9d87affd124bb345bf70a';
+const ROPSTEN_LOCKDROP = '0x5940864331bBB57a10FC55e72d88299D2Dce209C';
 
 $(function() {
   $('#EDGEWARE_BASE58_ADDRESS').on('blur', function(e) {
@@ -11,14 +13,12 @@ $(function() {
 
   $('input[name="network"]').change(function(e) {
     let network = $('input[name="network"]:checked').val();
-    let mainnet = '0x1b75b90e60070d37cfa9d87affd124bb345bf70a';
-    let ropsten = '0x5940864331bBB57a10FC55e72d88299D2Dce209C';
     if (network === 'mainnet') {
-      $('#LOCKDROP_CONTRACT_ADDRESS').val(mainnet);
+      $('#LOCKDROP_CONTRACT_ADDRESS').text(MAINNET_LOCKDROP);
     } else if (network === 'ropsten') {
-      $('#LOCKDROP_CONTRACT_ADDRESS').val(ropsten);
+      $('#LOCKDROP_CONTRACT_ADDRESS').text(ROPSTEN_LOCKDROP);
     } else {
-      $('#LOCKDROP_CONTRACT_ADDRESS').val(mainnet);
+      $('#LOCKDROP_CONTRACT_ADDRESS').text(MAINNET_LOCKDROP);
     }
   });
 
@@ -164,7 +164,6 @@ async function configureTransaction(isMetamask) {
 
     let res = validateContractAddress(signalingContractAddress, signalingContractNonce);
     if (!isMetamask && res.failure) {
-      console.log(isMetamask);
       return res;
     } else {
       signalingContractAddress = signalingContractAddress || params.from;
