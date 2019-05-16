@@ -187,6 +187,13 @@ input[type="submit"]:active {
 .form-field .explanation a:hover {
     color: #555;
 }
+.form-field .network-selector {
+    margin-top: 12px;
+}
+.form-field .network-selector label {
+    display: inline-block;
+    margin-right: 20px;
+}
 .participation-option {
     display: none;
 }
