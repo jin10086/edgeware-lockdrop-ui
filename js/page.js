@@ -13,13 +13,12 @@ $(function() {
     let network = $('input[name="network"]:checked').val();
     let mainnet = '0x1b75b90e60070d37cfa9d87affd124bb345bf70a';
     let ropsten = '0x5940864331bBB57a10FC55e72d88299D2Dce209C';
-    console.log(network);
     if (network === 'mainnet') {
-      $('#LOCKDROP_CONTRACT_ADDRESS').text(mainnet);
+      $('#LOCKDROP_CONTRACT_ADDRESS').val(mainnet);
     } else if (network === 'ropsten') {
-      $('#LOCKDROP_CONTRACT_ADDRESS').text(ropsten);
+      $('#LOCKDROP_CONTRACT_ADDRESS').val(ropsten);
     } else {
-      $('#LOCKDROP_CONTRACT_ADDRESS').text(mainnet);
+      $('#LOCKDROP_CONTRACT_ADDRESS').val(mainnet);
     }
   });
 
