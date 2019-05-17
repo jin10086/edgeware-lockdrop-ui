@@ -14,11 +14,11 @@ $(function() {
   $('input[name="network"]').change(function(e) {
     let network = $('input[name="network"]:checked').val();
     if (network === 'mainnet') {
-      $('#LOCKDROP_CONTRACT_ADDRESS').text(MAINNET_LOCKDROP);
+      $('#LOCKDROP_CONTRACT_ADDRESS').val(MAINNET_LOCKDROP);
     } else if (network === 'ropsten') {
-      $('#LOCKDROP_CONTRACT_ADDRESS').text(ROPSTEN_LOCKDROP);
+      $('#LOCKDROP_CONTRACT_ADDRESS').val(ROPSTEN_LOCKDROP);
     } else {
-      $('#LOCKDROP_CONTRACT_ADDRESS').text(MAINNET_LOCKDROP);
+      $('#LOCKDROP_CONTRACT_ADDRESS').val(MAINNET_LOCKDROP);
     }
   });
 
