@@ -2,6 +2,7 @@ let provider, web3, isValidBase58Input;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const MAINNET_LOCKDROP = '0x1b75b90e60070d37cfa9d87affd124bb345bf70a';
 const ROPSTEN_LOCKDROP = '0x5940864331bBB57a10FC55e72d88299D2Dce209C';
+const LOCKDROP_ABI = JSON.stringify([{"constant":true,"inputs":[],"name":"LOCK_START_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_END_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_DROP_PERIOD","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_origin","type":"address"},{"name":"_nonce","type":"uint32"}],"name":"addressFrom","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"contractAddr","type":"address"},{"name":"nonce","type":"uint32"},{"name":"edgewareAddr","type":"bytes"}],"name":"signal","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"term","type":"uint8"},{"name":"edgewareAddr","type":"bytes"},{"name":"isValidator","type":"bool"}],"name":"lock","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"inputs":[{"name":"startTime","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":false,"name":"eth","type":"uint256"},{"indexed":false,"name":"lockAddr","type":"address"},{"indexed":false,"name":"term","type":"uint8"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"isValidator","type":"bool"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Locked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"contractAddr","type":"address"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Signaled","type":"event"}])
 
 $(function() {
   $('#EDGEWARE_BASE58_ADDRESS').on('blur', function(e) {
@@ -48,7 +49,10 @@ $(function() {
       setupMetamaskWeb3Provider();
       // Grab form data
       let { returnTransaction, params, failure, reason } = await configureTransaction(true);
-      if (failure) alert(reason);
+      if (failure) {
+        alert(reason);
+        return;
+      }
       // Send transaction if successfully configured transaction
       returnTransaction.send(params, function(err, txHash) {
         if (err) {
@@ -68,17 +72,25 @@ $(function() {
     } else {
       $('.participation-option').hide();
       $('.participation-option.mycrypto').slideDown(100);
-      // Setup INFURA web3 provider
       setupInfuraWeb3Provider();
-      // Grab form data
-      let { returnTransaction, failure, reason } = await configureTransaction(false);
-      // Check for failure in cases of signaling for MyCrypto
+      let { returnTransaction, params, failure, reason, args } = await configureTransaction(false);
       if (failure) {
         alert(reason);
-      } else {
-        txData = returnTransaction.encodeABI();
-        $('#LOCKDROP_TX_DATA').text(txData);
-      }
+        return;
+      };
+      // Create arg string
+      let myCryptoArgs = Object.keys(args).map((a, inx) => {
+        if (inx == Object.keys(args).length - 1) {
+          return `${a}: ${args[a]}`;
+        } else {
+          return `${a}: ${args[a]}\n`;
+        }
+      }).reduce((prev, curr) => {
+        return prev.concat(curr);
+      }, "");
+
+      $('#LOCKDROP_MYCRYPTO_ABI').text(LOCKDROP_ABI);
+      $('#LOCKDROP_MYCRYPTO_ARGUMENTS').text(myCryptoArgs);
     }
   });
   $('button.cli').click(function() {
@@ -117,18 +129,12 @@ EDGEWARE_PUBLIC_ADDRESS=${edgewareBase58Address}`;
 
 async function configureTransaction(isMetamask) {
   let failure = false;
-  let returnTransaction, params, reason;
+  let returnTransaction, params, reason, args;
 
   let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
   let edgewareBase58Address = $('#EDGEWARE_BASE58_ADDRESS').val();
-  let ethLockAmount = $('#ETH_LOCK_AMOUNT').val();
   let lockdropLocktimeFormValue = $('input[name=locktime]:checked').val();
-  let validatorIntent = $('input[name=validator]:checked').val();
-
-  if (isNaN(+ethLockAmount) || +ethLockAmount <= 0) {
-    alert('Please enter a valid ETH amount!');
-    return;
-  }
+  let validatorIntent = ($('input[name=validator]:checked').val() === 'yes') ? true : false;
 
   // Encode Edgeware address in hex for Ethereum transactions
   const encodedEdgewareAddress = '0x' + toHexString(fromB58(edgewareBase58Address));
@@ -138,6 +144,12 @@ async function configureTransaction(isMetamask) {
   // Switch on transaction type
   const signaling = (lockdropLocktimeFormValue === 'signal');
   if (!signaling) {
+    let ethLockAmount = $('#ETH_LOCK_AMOUNT').val();
+    if (isNaN(+ethLockAmount) || +ethLockAmount <= 0) {
+      alert('Please enter a valid ETH amount!');
+      return;
+    }
+
     // Calculate lock term as enum values
     const lockdropLocktime = (lockdropLocktimeFormValue === 'lock3')
     ? 0 : (lockdropLocktimeFormValue === 'lock6')
@@ -153,6 +165,11 @@ async function configureTransaction(isMetamask) {
       };
     }
     returnTransaction = contract.methods.lock(lockdropLocktime, encodedEdgewareAddress, validatorIntent);
+    args = {
+      term: lockdropLocktime,
+      edgewareAddr: encodedEdgewareAddress,
+      isValidator: validatorIntent,
+    }
   } else {
     if (isMetamask) {
       const coinbaseAcct = await web3.eth.getCoinbase();
@@ -172,8 +189,13 @@ async function configureTransaction(isMetamask) {
     }
 
     returnTransaction = contract.methods.signal(signalingContractAddress, signalingContractNonce, encodedEdgewareAddress);
+    args = {
+      contractAddr: signalingContractAddress,
+      nonce: signalingContractNonce,
+      edgewareAddr: encodedEdgewareAddress,
+    };
   }
-  return { returnTransaction, params, failure, reason };
+  return { returnTransaction, params, failure, reason, args };
 }
 
 /**
