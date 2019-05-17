@@ -149,13 +149,14 @@ async function configureTransaction(isMetamask) {
       params = {
         from: coinbaseAcct,
         value: web3.utils.toWei(ethLockAmount, 'ether'),
+        gasLimit: 100000,
       };
     }
     returnTransaction = contract.methods.lock(lockdropLocktime, encodedEdgewareAddress, validatorIntent);
   } else {
     if (isMetamask) {
       const coinbaseAcct = await web3.eth.getCoinbase();
-      params = { from: coinbaseAcct };
+      params = { from: coinbaseAcct, gasLimit: 100000 };
     }
 
     // FIXME: Create these inputs for signalers
