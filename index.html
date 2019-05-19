@@ -132,23 +132,24 @@
         <div class="participation-option mycrypto">
           <h3>Step 1.</h3>
           <p>
-            Copy the raw transaction data below for your respective lockdrop action.
-            You will need to paste this into MyCrypto's interface.
-            <pre id="LOCKDROP_TX_DATA"></pre>
+            Visit <a href="https://mycrypto.com/contracts/interact" target="_blank">MyCrypto's Contract Interface</a>
+            and select the <b><i>Custom</i></b> contract type.
           </p>
           <h3>Step 2.</h3>
           <p>
-            Visit <a href="https://mycrypto.com/account">MyCrypto</a>
-            and select your preferred method of transacting.
-            Select advanced transaction options and input the
-            transaction data above.
+            Copy the Edgeware Lockdrop JSON ABI below. You can verify it on
+            <a href="https://etherscan.io/address/0x1b75b90e60070d37cfa9d87affd124bb345bf70a#code" target="_blank">Etherscan</a>.
+            <pre id="LOCKDROP_MYCRYPTO_ABI"></pre>
           </p>
           <h3>Step 3.</h3>
           <p>
-            If you are locking, input the amount you wish to
-            lock up in the value field on MyCrypto. Signalers
-            should not send any value. Finally, send and sign the
-            transaction on the MyCrypto interface.
+            Paste the contract address at the top of the page and
+            the ABI into the designated inputs.
+          </p>
+          <h3>Step 4.</h3>
+          <p>
+            Input the following data into the fields that you have indicated above in the MyCrypto interface.
+            <pre id="LOCKDROP_MYCRYPTO_ARGUMENTS"></pre>
           </p>
         </div>
         <div class="participation-option cli">
