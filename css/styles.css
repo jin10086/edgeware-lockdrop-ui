@@ -87,7 +87,9 @@ input[type="submit"]:active {
  * PAGE LAYOUT
  */
 .header {
-    background: #111;
+    background-image: url("/images/header.png");
+    background-size: cover;
+    background-position: center;
     color: #fff;
     text-align: center;
     padding: 40px 0;
@@ -95,9 +97,10 @@ input[type="submit"]:active {
 }
 
 .footer {
-    background: #111;
+    background: #333;
     padding: 20px 0 25px;
     font-size: 16px;
+    text-align: center;
 }
 .footer,
 .footer a {
