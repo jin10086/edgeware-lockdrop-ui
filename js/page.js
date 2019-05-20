@@ -2,7 +2,7 @@ let provider, web3, isValidBase58Input;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const MAINNET_LOCKDROP = '0x1b75b90e60070d37cfa9d87affd124bb345bf70a';
 const ROPSTEN_LOCKDROP = '0x5940864331bBB57a10FC55e72d88299D2Dce209C';
-const LOCKDROP_ABI = JSON.stringify([{"constant":true,"inputs":[],"name":"LOCK_START_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_END_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_DROP_PERIOD","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_origin","type":"address"},{"name":"_nonce","type":"uint32"}],"name":"addressFrom","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"contractAddr","type":"address"},{"name":"nonce","type":"uint32"},{"name":"edgewareAddr","type":"bytes"}],"name":"signal","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"term","type":"uint8"},{"name":"edgewareAddr","type":"bytes"},{"name":"isValidator","type":"bool"}],"name":"lock","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"inputs":[{"name":"startTime","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":false,"name":"eth","type":"uint256"},{"indexed":false,"name":"lockAddr","type":"address"},{"indexed":false,"name":"term","type":"uint8"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"isValidator","type":"bool"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Locked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"contractAddr","type":"address"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Signaled","type":"event"}])
+const LOCKDROP_ABI = JSON.stringify([{"constant":true,"inputs":[],"name":"LOCK_START_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_END_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_DROP_PERIOD","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_origin","type":"address"},{"name":"_nonce","type":"uint32"}],"name":"addressFrom","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"contractAddr","type":"address"},{"name":"nonce","type":"uint32"},{"name":"edgewareAddr","type":"bytes"}],"name":"signal","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"term","type":"uint8"},{"name":"edgewareAddr","type":"bytes"},{"name":"isValidator","type":"bool"}],"name":"lock","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"inputs":[{"name":"startTime","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":false,"name":"eth","type":"uint256"},{"indexed":false,"name":"lockAddr","type":"address"},{"indexed":false,"name":"term","type":"uint8"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"isValidator","type":"bool"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Locked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"contractAddr","type":"address"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Signaled","type":"event"}]);
 
 $(function() {
   $('#EDGEWARE_BASE58_ADDRESS').on('blur', function(e) {
@@ -77,7 +77,7 @@ $(function() {
       if (failure) {
         alert(reason);
         return;
-      };
+      }
       // Create arg string
       let myCryptoArgs = Object.keys(args).map((a, inx) => {
         if (inx == Object.keys(args).length - 1) {
@@ -151,9 +151,9 @@ async function configureTransaction(isMetamask) {
     }
 
     // Calculate lock term as enum values
-    const lockdropLocktime = (lockdropLocktimeFormValue === 'lock3')
-    ? 0 : (lockdropLocktimeFormValue === 'lock6')
-      ? 1 : 2;
+    const lockdropLocktime = (lockdropLocktimeFormValue === 'lock3') ?
+          0 : ((lockdropLocktimeFormValue === 'lock6') ?
+               1 : 2);
 
     // Params are only needed for sending transactions directly i.e. from Metamask
     if (isMetamask) {
@@ -169,7 +169,7 @@ async function configureTransaction(isMetamask) {
       term: lockdropLocktime,
       edgewareAddr: encodedEdgewareAddress,
       isValidator: validatorIntent,
-    }
+    };
   } else {
     if (isMetamask) {
       const coinbaseAcct = await web3.eth.getCoinbase();
@@ -206,7 +206,7 @@ function validateBase58Input(input) {
   // Keys should be formatted as '5GYyKi34emBk54Tf6t3xRgq71x8jRVLykaQqwkJKP76pGwry'
   if (input.length != 48) return false;
 
-  for (inx in input) {
+  for (var inx in input) {
     if (BASE58_ALPHABET.indexOf(input[inx]) == -1) {
       return false;
     }
@@ -257,7 +257,7 @@ function setupMetamaskWeb3Provider() {
   // Setup web3 provider
   if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
     // Web3 browser user detected. You can now use the provider.
-    provider = window['ethereum'] || window.web3.currentProvider
+    provider = window.ethereum || window.web3.currentProvider;
   }
 
   web3 = new window.Web3(provider);
@@ -280,10 +280,10 @@ function setupInfuraWeb3Provider() {
  */
 async function enableMetamaskEthereumConnection() {
   try {
-    await ethereum.enable()
+    await ethereum.enable();
   } catch (error) {
     // Handle error. Likely the user rejected the login:
-    console.log(reason === 'User rejected provider access')
+    console.log(reason === 'User rejected provider access');
   }
 }
 
