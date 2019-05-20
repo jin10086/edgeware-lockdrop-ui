@@ -93,6 +93,7 @@ $(function() {
         return prev.concat(curr);
       }, "");
 
+      $('#LOCKDROP_MYCRYPTO_CONTRACT_ADDRESS').text($('#LOCKDROP_CONTRACT_ADDRESS').val());
       $('#LOCKDROP_MYCRYPTO_ABI').text(LOCKDROP_ABI);
       $('#LOCKDROP_MYCRYPTO_ARGUMENTS').text(myCryptoArgs);
     }

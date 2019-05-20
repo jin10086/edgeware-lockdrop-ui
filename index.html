@@ -39,7 +39,7 @@
         </div>
         <div class="explanation">
           Contract audited by <a href="https://arena-attachments.s3.amazonaws.com/4282493/a155dc84aa1dfba4cfd3dc6be1e1ebdc.pdf?1557965252" target="_blank">Quantstamp</a>.
-          Verify the code on <a href="https://etherscan.io/address/0x1b75b90e60070d37cfa9d87affd124bb345bf70a" target="_blank">Etherscan</a>.
+          Verify the code and ABI on <a href="https://etherscan.io/address/0x1b75b90e60070d37cfa9d87affd124bb345bf70a" target="_blank">Etherscan</a>.
         </div>
       </div>
       <div class="form-field">
@@ -118,8 +118,14 @@
           </div>
         </div>
         <div class="explanation">
-          Select MyCrypto if you are using a Ledger, Trezor, or Safe-T
-          hardware wallet, or an offline keystore file.
+          <p>
+            Select MyCrypto if you are using a Ledger, Trezor, or Safe-T
+            hardware wallet, or an offline keystore file.
+          </p>
+          <p>
+            For optimal security, we recommend using
+            the desktop version of MyCrypto with a hardware wallet.
+          </p>
         </div>
       </div>
       <div class="participation-options">
@@ -134,23 +140,32 @@
         <div class="participation-option mycrypto">
           <h3>Step 1.</h3>
           <p>
-            Visit <a href="https://mycrypto.com/contracts/interact" target="_blank">MyCrypto's Contract Interface</a>
-            and select the <b><i>Custom</i></b> contract type.
+            Open MyCrypto on desktop or web, and
+            select <a href="https://mycrypto.com/contracts/interact"
+            target="_blank">Tools &rsaquo; Interact with
+              Contracts</a>.
           </p>
           <h3>Step 2.</h3>
           <p>
-            Copy the Edgeware Lockdrop JSON ABI below. You can verify it on
-            <a href="https://etherscan.io/address/0x1b75b90e60070d37cfa9d87affd124bb345bf70a#code" target="_blank">Etherscan</a>.
-            <pre id="LOCKDROP_MYCRYPTO_ABI"></pre>
+            Select <strong>Custom</strong> as the contract, and copy the contract address.
           </p>
+          <pre id="LOCKDROP_MYCRYPTO_CONTRACT_ADDRESS"></pre>
           <h3>Step 3.</h3>
           <p>
-            Paste the contract address at the top of the page and
-            the ABI into the designated inputs.
+            Copy the JSON ABI into the designated input, making sure
+            there are no extra spaces or line breaks.
+          </p>
+          <pre id="LOCKDROP_MYCRYPTO_ABI"></pre>
           </p>
           <h3>Step 4.</h3>
           <p>
-            Input the following data into the fields that you have indicated above in the MyCrypto interface.
+            Click the Access button, and
+            select <strong>signal</strong> or <strong>lock</strong>
+            from the dropdown.
+          </p>
+          <h3>Step 5.</h3>
+          <p>
+            Input the following data. Sign and send the transaction using your wallet.
             <pre id="LOCKDROP_MYCRYPTO_ARGUMENTS"></pre>
           </p>
         </div>
@@ -161,15 +176,18 @@
             repository locally. Refer to the README for questions as well as the structure of the API.
           </p>
           <h3>Step 2.</h3>
-            <p>
-              Create a <i>.env</i> file in the root directory of the repository, containing the following data.
-              <pre id="LOCKDROP_DOTENV"></pre>
-            </p>
-          <h3>Examples</h3>
           <p>
-            Locking 0.5 ETH for 3 months, as a validator at network launch
+            Create a <i>.env</i> file in the root directory of the repository, containing the following data.
+            <pre id="LOCKDROP_DOTENV"></pre>
+          </p>
+          <h3>Step 3.</h3>
+          <p>
+            Use the API to send the appropriate locking or signaling transaction. For example:
+          </p>
+          <p>
+            Locking 0.5 ETH for 3 months, as a validator at network launch, on mainnet
             <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --lock --lockLength 3 --lockValue 0.5 --edgeAddress $BASE58_EDGE_ADDRESS --isValidator</pre>
-            Signaling from a specified contract with a specified nonce
+            Signaling from a specified contract with a specified nonce, on mainnet
             <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --signal $FROM_CONTRACT --nonce $NONCE_OF_SIGNAL_CONTRACT --edgeAddress $BASE58_EDGE_ADDRESS</pre>
           </p>
         </div>

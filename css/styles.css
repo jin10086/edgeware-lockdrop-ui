@@ -18,13 +18,16 @@ h2 {
     font-size: 24px;
     font-weight: 500;
 }
+h3 {
+    margin-top: 30px;
+}
 hr {
     border-top: none;
     border-bottom: 1px solid #ececec;
 }
 p {
     margin-top: 0;
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
 }
 a {
     color: #111;
@@ -196,9 +199,6 @@ input[type="submit"]:active {
 }
 .participation-option {
     display: none;
-}
-.participation-option h3 {
-    margin-top: 20px;
 }
 
 .form-field button.metamask {
