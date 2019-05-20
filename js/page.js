@@ -42,8 +42,6 @@ $(function() {
       alert('Please enter a valid base58 edgeware public address!');
       return;
     } else {
-      $('.participation-option').hide();
-      $('.participation-option.metamask').slideDown(100);
       // Setup ethereum connection and web3 provider
       await enableMetamaskEthereumConnection();
       setupMetamaskWeb3Provider();
@@ -53,14 +51,20 @@ $(function() {
         alert(reason);
         return;
       }
+      $('.participation-option').hide();
+      $('.participation-option.metamask').slideDown(100);
+      $('.participation-option.metamask .metamask-error').text('').hide();
+      $('.participation-option.metamask .metamask-success').text('').hide();
       // Send transaction if successfully configured transaction
       returnTransaction.send(params, function(err, txHash) {
         if (err) {
-          // Do something with errors
           console.log(err);
+          $('.participation-option.metamask .metamask-error').show()
+            .text(err.message);
         } else {
-          // Do something with results
           console.log(txHash);
+          $('.participation-option.metamask .metamask-success').show()
+            .text('Success! Transaction submitted');
         }
       });
     }
@@ -70,14 +74,14 @@ $(function() {
       alert('Please enter a valid base58 edgeware public address!');
       return;
     } else {
-      $('.participation-option').hide();
-      $('.participation-option.mycrypto').slideDown(100);
       setupInfuraWeb3Provider();
       let { returnTransaction, params, failure, reason, args } = await configureTransaction(false);
       if (failure) {
         alert(reason);
         return;
       }
+      $('.participation-option').hide();
+      $('.participation-option.mycrypto').slideDown(100);
       // Create arg string
       let myCryptoArgs = Object.keys(args).map((a, inx) => {
         if (inx == Object.keys(args).length - 1) {
@@ -216,7 +220,6 @@ function validateBase58Input(input) {
 
 /**
  * Ensure that the contract address and nonce are properly formatted
- * @param {String} input
  */
 function validateContractAddress(contractAddress, nonce) {
   if (!contractAddress || !nonce) {
@@ -283,7 +286,7 @@ async function enableMetamaskEthereumConnection() {
     await ethereum.enable();
   } catch (error) {
     // Handle error. Likely the user rejected the login:
-    console.log(reason === 'User rejected provider access');
+    alert('Could not find Web3 provider/Ethereum wallet');
   }
 }
 

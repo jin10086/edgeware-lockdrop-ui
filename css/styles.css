@@ -214,6 +214,17 @@ input[type="submit"]:active {
     color: #fff;
 }
 
+.metamask-error,
+.metamask-success {
+    margin: 20px 0;
+}
+.metamask-error {
+    color: #d3363c;
+}
+.metamask-success {
+    color: #53a55b;
+}
+
 /*
  * RESPONSIVE STYLES
  */
