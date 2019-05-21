@@ -67,6 +67,7 @@ $(function() {
             .text('Success! Transaction submitted');
         }
       });
+      $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
     }
   });
   $('button.mycrypto').click(async function() {
@@ -96,6 +97,7 @@ $(function() {
       $('#LOCKDROP_MYCRYPTO_CONTRACT_ADDRESS').text($('#LOCKDROP_CONTRACT_ADDRESS').val());
       $('#LOCKDROP_MYCRYPTO_ABI').text(LOCKDROP_ABI);
       $('#LOCKDROP_MYCRYPTO_ARGUMENTS').text(myCryptoArgs);
+      $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
     }
   });
   $('button.cli').click(function() {
@@ -119,6 +121,7 @@ LOCKDROP_CONTRACT_ADDRESS=${lockdropContractAddress}
 # Edgeware config
 EDGEWARE_PUBLIC_ADDRESS=${edgewareBase58Address}`;
     $('#LOCKDROP_DOTENV').text(dotenv);
+    $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
   });
 
   $('button.commonwealth-ui').click(function() {
