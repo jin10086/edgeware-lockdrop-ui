@@ -97,6 +97,11 @@ $(function() {
       $('#LOCKDROP_MYCRYPTO_CONTRACT_ADDRESS').text($('#LOCKDROP_CONTRACT_ADDRESS').val());
       $('#LOCKDROP_MYCRYPTO_ABI').text(LOCKDROP_ABI);
       $('#LOCKDROP_MYCRYPTO_ARGUMENTS').text(myCryptoArgs);
+      if ($('input[name=locktime]:checked').val() === 'signal') {
+        $('#LOCKDROP_MYCRYPTO_VALUE').hide();
+      } else {
+        $('#LOCKDROP_MYCRYPTO_VALUE').show().text('Value: ' + $('#ETH_LOCK_AMOUNT').val());
+      }
       $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
     }
   });
@@ -188,7 +193,7 @@ async function configureTransaction(isMetamask) {
     let signalingContractAddress = $('#SIGNALING_CONTRACT_ADDR').val();
     let signalingContractNonce = $('#SIGNALING_CONTRACT_NONCE').val();
 
-    let res = validateContractAddress(signalingContractAddress, signalingContractNonce);
+    let res = validateSignalingContractAddress(signalingContractAddress, signalingContractNonce);
     if (!isMetamask && res.failure) {
       return res;
     } else {
@@ -225,11 +230,11 @@ function validateBase58Input(input) {
 /**
  * Ensure that the contract address and nonce are properly formatted
  */
-function validateContractAddress(contractAddress, nonce) {
+function validateSignalingContractAddress(contractAddress, nonce) {
   if (!contractAddress || !nonce) {
     return {
       failure: true,
-      reason: 'No signaling contract or nonce provided for generating tx data',
+      reason: 'Signaled address and nonce are required if you are using MyCrypto. Use 0 for the nonce if you are signaling the address you are sending from.',
     };
   }
 
@@ -243,14 +248,14 @@ function validateContractAddress(contractAddress, nonce) {
   if (contractAddress.indexOf('0x') > 0 && contractAddress.length !== 42) {
     return {
       failure: true,
-      reason: 'Contract address is not valid, it contains 0x but must by 20 bytes in length',
+      reason: 'Signaled address is not valid, it contains 0x but must be 20 bytes in length',
     };
   }
 
   if (contractAddress.indexOf('0x') === -1 && contractAddress.length !== 40) {
     return {
       failure: true,
-      reason: 'Contract address is not valid, it does not contain 0x nor is it 20 bytes',
+      reason: 'Signaled address is not valid, it does not contain 0x nor is it 20 bytes',
     };
   }
 

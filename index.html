@@ -90,22 +90,29 @@
       </div>
       <div class="form-field form-field-signaling">
         <div class="form-left">
-          <div class="caption">Signalled contract address (optional)</div>
-          <input id="SIGNALING_CONTRACT_ADDR" type="text" placeholder="Enter contract address here"></input>
+          <div class="caption">Signaled address (optional)</div>
+          <input id="SIGNALING_CONTRACT_ADDR" type="text" placeholder="Enter signaled address here"></input>
         </div>
         <div class="explanation">
-          You may signal the balance of a contract you have created.
-          If none is provided, ensure a default address is available
-          through Metamask.
+          <p>
+            Enter the address whose ETH balance you are signaling.
+          </p>
+          <p>
+            You may enter the address you are sending from, or the
+            address of a contract you have created.
+          </p>
         </div>
       </div>
       <div class="form-field form-field-signaling">
         <div class="form-left">
-          <div class="caption">Signalled contract nonce (optional)</div>
+          <div class="caption">Signaled contract nonce (optional)</div>
           <input id="SIGNALING_CONTRACT_NONCE" type="text" placeholder="Enter contract nonce here"></input>
         </div>
         <div class="explanation">
-          If you are signaling a contract, You must provide the nonce used when the contract was created. If you omit this, it is assumed you are signaling from your default address in Metamask. Anything else will fail.
+          <p>
+            If you are signaling a contract, enter the nonce used when
+            the contract was created. Otherwise, enter 0.
+          </p>
         </div>
       </div>
       <div class="form-field">
@@ -136,34 +143,46 @@
         <div class="participation-option mycrypto">
           <h3>Step 1.</h3>
           <p>
-            Open MyCrypto on desktop or web, and
+            Open MyCrypto, and
             select <a href="https://mycrypto.com/contracts/interact"
             target="_blank">Tools &rsaquo; Interact with
-            Contracts</a>. For security, we recommend using desktop
-            MyCrypto with a hardware wallet.
+              Contracts</a>.
+          </p>
+          <p>
+            For security, we recommend using desktop MyCrypto with a
+            hardware wallet.
           </p>
           <h3>Step 2.</h3>
           <p>
-            Select <strong>Custom</strong> as the contract, and copy the contract address.
+            Select <strong>Custom</strong> as the contract. Copy the
+            lockdrop contract address into the designated input.
           </p>
           <pre id="LOCKDROP_MYCRYPTO_CONTRACT_ADDRESS"></pre>
           <h3>Step 3.</h3>
           <p>
-            Copy the JSON ABI into the designated input, making sure
+            Copy the JSON ABI into the designated input. Make sure
             there are no extra spaces or line breaks.
           </p>
           <pre id="LOCKDROP_MYCRYPTO_ABI"></pre>
           </p>
           <h3>Step 4.</h3>
           <p>
-            Click the Access button, and
-            select <strong>signal</strong> or <strong>lock</strong>
-            from the dropdown.
+            Click the Access button. Select <strong>signal</strong>
+            or <strong>lock</strong> from the dropdown.
           </p>
           <h3>Step 5.</h3>
           <p>
-            Input the following data. Sign and send the transaction using your wallet.
-            <pre id="LOCKDROP_MYCRYPTO_ARGUMENTS"></pre>
+            Input the following data.
+          </p>
+          <pre id="LOCKDROP_MYCRYPTO_ARGUMENTS"></pre>
+          <pre id="LOCKDROP_MYCRYPTO_VALUE"></pre>
+          <p>
+            Unlock your wallet, and enter the amount you are locking
+            under <strong>Value</strong>, or leave blank if you are
+            signaling). We recommend setting your gas limit to 50000.
+          </p>
+          <p>
+            Sign and send the transaction.
           </p>
         </div>
         <div class="participation-option cli">
