@@ -122,10 +122,6 @@
             Select MyCrypto if you are using a Ledger, Trezor, or Safe-T
             hardware wallet, or an offline keystore file.
           </p>
-          <p>
-            For optimal security, we recommend using
-            the desktop version of MyCrypto with a hardware wallet.
-          </p>
         </div>
       </div>
       <div class="participation-options">
@@ -143,7 +139,8 @@
             Open MyCrypto on desktop or web, and
             select <a href="https://mycrypto.com/contracts/interact"
             target="_blank">Tools &rsaquo; Interact with
-              Contracts</a>.
+            Contracts</a>. For security, we recommend using desktop
+            MyCrypto with a hardware wallet.
           </p>
           <h3>Step 2.</h3>
           <p>
@@ -182,8 +179,9 @@
           </p>
           <h3>Step 3.</h3>
           <p>
-            Use the API to send the appropriate locking or signaling transaction. For example:
+            Use the API to send the appropriate locking or signaling transaction.
           </p>
+          <h3>Examples</h3>
           <p>
             Locking 0.5 ETH for 3 months, as a validator at network launch, on mainnet
             <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --lock --lockLength 3 --lockValue 0.5 --edgeAddress $BASE58_EDGE_ADDRESS --isValidator</pre>
