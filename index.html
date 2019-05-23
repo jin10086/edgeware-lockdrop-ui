@@ -7,10 +7,10 @@
     <meta name="author" content="Commonwealth Labs">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="css/normalize.css" integrity="sha256-DaUM/zVwiieQ2sBFfs3D5S48gRyu+TwnT7PzlOfotr8=">
-    <link rel="stylesheet" href="css/styles.css" integrity="sha256-UePhjjqBbbFxegZHZDVSg+ows+kAyZKkWcBS7p9s/Mc=">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" type="image/png" href="images/favicon.png" integrity="8WG7zqThs3ESKn2NJ1vJ0cFzM0VYcu/SHB0dHA9NtXw=">
     <script src="js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="></script>
-    <script src="js/page.js" integrity="sha256-b2nfrRS23zguwP1IKiZl2tqnG9Snty1lyUlOtlA3za8="></script>
+    <script src="js/page.js"></script>
   </head>
   <body>
     <div class="header">
@@ -50,13 +50,13 @@
       </div>
       <div class="form-field">
         <div class="form-left">
-          <div class="caption">EDG address</div>
-          <input id="EDGEWARE_BASE58_ADDRESS" type="text" value=""
-                 placeholder="EDG public key (e.g. 0x12...)"></input>
+          <div class="caption">EDG public key (hex)</div>
+          <input id="EDGEWARE_PUBLIC_KEY" type="text" value=""
+                 placeholder="e.g. 0x12b2d1..."></input>
         </div>
         <div class="explanation">
-          Your EDG will go to this address.
-          If you do not have an EDG address, create one using the <a href="gettingstarted.html" target="_blank">instructions</a>.
+          Your EDG will go to this public key.
+          If you do not have a public key, create one using the <a href="gettingstarted.html" target="_blank">instructions</a>.
         </div>
       </div>
       <div class="form-field">
@@ -209,9 +209,9 @@
           <h3>Examples</h3>
           <p>
             Locking 0.5 ETH for 3 months, as a validator at network launch, on mainnet
-            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --lock --lockLength 3 --lockValue 0.5 --edgewarePublicKey $EDGEWARE_PUBLIC_KEY --isValidator</pre>
+            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --lock --lockLength 3 --lockValue 0.5 --edgeAddress $EDGEWARE_SR25519_PUBLIC_KEY --isValidator</pre>
             Signaling from a specified contract with a specified nonce, on mainnet
-            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --signal $FROM_CONTRACT --nonce $NONCE_OF_SIGNAL_CONTRACT --edgewarePublicKey $EDGEWARE_PUBLIC_KEY</pre>
+            <pre>node ./scripts/lockdrop.js --remoteUrl https://mainnet.infura.io --signal $FROM_CONTRACT --nonce $NONCE_OF_SIGNAL_CONTRACT --edgeAddress $EDGEWARE_SR25519_PUBLIC_KEY</pre>
           </p>
         </div>
       </div>
