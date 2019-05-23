@@ -5,10 +5,10 @@ const ROPSTEN_LOCKDROP = '0x5940864331bBB57a10FC55e72d88299D2Dce209C';
 const LOCKDROP_ABI = JSON.stringify([{"constant":true,"inputs":[],"name":"LOCK_START_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_END_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_DROP_PERIOD","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_origin","type":"address"},{"name":"_nonce","type":"uint32"}],"name":"addressFrom","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"contractAddr","type":"address"},{"name":"nonce","type":"uint32"},{"name":"edgewareAddr","type":"bytes"}],"name":"signal","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"term","type":"uint8"},{"name":"edgewareAddr","type":"bytes"},{"name":"isValidator","type":"bool"}],"name":"lock","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"inputs":[{"name":"startTime","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":false,"name":"eth","type":"uint256"},{"indexed":false,"name":"lockAddr","type":"address"},{"indexed":false,"name":"term","type":"uint8"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"isValidator","type":"bool"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Locked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"contractAddr","type":"address"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Signaled","type":"event"}]);
 
 $(function() {
-  $('#EDGEWARE_BASE58_ADDRESS').on('blur', function(e) {
+  $('#EDGEWARE_PUBLIC_KEY').on('blur', function(e) {
     isValidBase58Input = validateBase58Input(e.target.value);
-    if (e.target.value !== '' && !isValidBase58Input) {
-      alert('Please enter a valid base58 edgeware public address!');
+    if (e.target.value !== '' && (e.target.value.length === 64 || e.target.value.length === 66)) {
+      alert('Please enter a valid 32-byte public key with or without 0x prefix');
     }
   });
 
@@ -38,72 +38,62 @@ $(function() {
   });
 
   $('button.metamask').click(async function() {
-    if (!isValidBase58Input) {
-      alert('Please enter a valid base58 edgeware public address!');
+    // Setup ethereum connection and web3 provider
+    await enableMetamaskEthereumConnection();
+    setupMetamaskWeb3Provider();
+    // Grab form data
+    let { returnTransaction, params, failure, reason } = await configureTransaction(true);
+    if (failure) {
+      alert(reason);
       return;
-    } else {
-      // Setup ethereum connection and web3 provider
-      await enableMetamaskEthereumConnection();
-      setupMetamaskWeb3Provider();
-      // Grab form data
-      let { returnTransaction, params, failure, reason } = await configureTransaction(true);
-      if (failure) {
-        alert(reason);
-        return;
-      }
-      $('.participation-option').hide();
-      $('.participation-option.metamask').slideDown(100);
-      $('.participation-option.metamask .metamask-error').text('').hide();
-      $('.participation-option.metamask .metamask-success').text('').hide();
-      // Send transaction if successfully configured transaction
-      returnTransaction.send(params, function(err, txHash) {
-        if (err) {
-          console.log(err);
-          $('.participation-option.metamask .metamask-error').show()
-            .text(err.message);
-        } else {
-          console.log(txHash);
-          $('.participation-option.metamask .metamask-success').show()
-            .text('Success! Transaction submitted');
-        }
-      });
-      $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
     }
+    $('.participation-option').hide();
+    $('.participation-option.metamask').slideDown(100);
+    $('.participation-option.metamask .metamask-error').text('').hide();
+    $('.participation-option.metamask .metamask-success').text('').hide();
+    // Send transaction if successfully configured transaction
+    returnTransaction.send(params, function(err, txHash) {
+      if (err) {
+        console.log(err);
+        $('.participation-option.metamask .metamask-error').show()
+          .text(err.message);
+      } else {
+        console.log(txHash);
+        $('.participation-option.metamask .metamask-success').show()
+          .text('Success! Transaction submitted');
+      }
+    });
+    $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
   });
   $('button.mycrypto').click(async function() {
-    if (!isValidBase58Input) {
-      alert('Please enter a valid base58 edgeware public address!');
+    setupInfuraWeb3Provider();
+    let { returnTransaction, params, failure, reason, args } = await configureTransaction(false);
+    if (failure) {
+      alert(reason);
       return;
-    } else {
-      setupInfuraWeb3Provider();
-      let { returnTransaction, params, failure, reason, args } = await configureTransaction(false);
-      if (failure) {
-        alert(reason);
-        return;
-      }
-      $('.participation-option').hide();
-      $('.participation-option.mycrypto').slideDown(100);
-      // Create arg string
-      let myCryptoArgs = Object.keys(args).map((a, inx) => {
-        if (inx == Object.keys(args).length - 1) {
-          return `${a}: ${args[a]}`;
-        } else {
-          return `${a}: ${args[a]}\n`;
-        }
-      }).reduce((prev, curr) => {
-        return prev.concat(curr);
-      }, "");
-
-      $('#LOCKDROP_MYCRYPTO_CONTRACT_ADDRESS').text($('#LOCKDROP_CONTRACT_ADDRESS').val());
-      $('#LOCKDROP_MYCRYPTO_ABI').text(LOCKDROP_ABI);
-      $('#LOCKDROP_MYCRYPTO_ARGUMENTS').text(myCryptoArgs);
-      if ($('input[name=locktime]:checked').val() === 'signal') {
-        $('#LOCKDROP_MYCRYPTO_VALUE').hide();
-      } else {
-        $('#LOCKDROP_MYCRYPTO_VALUE').show().text('Value: ' + $('#ETH_LOCK_AMOUNT').val());
-      }
-      $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
     }
+    $('.participation-option').hide();
+    $('.participation-option.mycrypto').slideDown(100);
+    // Create arg string
+    let myCryptoArgs = Object.keys(args).map((a, inx) => {
+      if (inx == Object.keys(args).length - 1) {
+        return `${a}: ${args[a]}`;
+      } else {
+        return `${a}: ${args[a]}\n`;
+      }
+    }).reduce((prev, curr) => {
+      return prev.concat(curr);
+    }, "");
+
+    $('#LOCKDROP_MYCRYPTO_CONTRACT_ADDRESS').text($('#LOCKDROP_CONTRACT_ADDRESS').val());
+    $('#LOCKDROP_MYCRYPTO_ABI').text(LOCKDROP_ABI);
+    $('#LOCKDROP_MYCRYPTO_ARGUMENTS').text(myCryptoArgs);
+    if ($('input[name=locktime]:checked').val() === 'signal') {
+      $('#LOCKDROP_MYCRYPTO_VALUE').hide();
+    } else {
+      $('#LOCKDROP_MYCRYPTO_VALUE').show().text('Value: ' + $('#ETH_LOCK_AMOUNT').val());
+    }
+    $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
   });
   $('button.cli').click(function() {
     if (!isValidBase58Input) {
@@ -113,7 +103,7 @@ $(function() {
     $('.participation-option').hide();
     $('.participation-option.cli').slideDown(100);
     let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
-    let edgewareBase58Address = $('#EDGEWARE_BASE58_ADDRESS').val();
+    let edgewarePublicKey = $('#EDGEWARE_PUBLIC_KEY').val();
     const dotenv = `# ETH config
 ETH_PRIVATE_KEY=<ENTER_YOUR_PRIVATE_KEY_HEX_HERE>
 
@@ -124,7 +114,7 @@ INFURA_PATH=v3/<INSERT_INFURA_API_KEY_HERE>
 LOCKDROP_CONTRACT_ADDRESS=${lockdropContractAddress}
 
 # Edgeware config
-EDGEWARE_PUBLIC_ADDRESS=${edgewareBase58Address}`;
+EDGEWARE_PUBLIC_KEY=${edgewarePublicKey}`;
     $('#LOCKDROP_DOTENV').text(dotenv);
     $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
   });
@@ -145,12 +135,20 @@ async function configureTransaction(isMetamask) {
   let returnTransaction, params, reason, args;
 
   let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
-  let edgewareBase58Address = $('#EDGEWARE_BASE58_ADDRESS').val();
+  let edgewarePublicKey = $('#EDGEWARE_PUBLIC_KEY').val();
+  // Make sure public key length and format is valid
+  if (edgewarePublicKey.length === 64 && edgewarePublicKey.indexOf('0x') !== -1) {
+    alert('Please enter a valid Edgeware 32-byte public key with or without 0x prefix');
+    return;
+  }
+  // Make sure public key length and format is valid
+  if (edgewarePublicKey.length === 66 && edgewarePublicKey.indexOf('0x') === -1) {
+    alert('Please enter a valid Edgeware 32-byte public key with or without 0x prefix');
+    return;
+  }
+
   let lockdropLocktimeFormValue = $('input[name=locktime]:checked').val();
   let validatorIntent = ($('input[name=validator]:checked').val() === 'yes') ? true : false;
-
-  // Encode Edgeware address in hex for Ethereum transactions
-  const encodedEdgewareAddress = '0x' + toHexString(fromB58(edgewareBase58Address));
   // Grab lockdrop JSON and instantiate contract
   const json = await $.getJSON('Lockdrop.json');
   const contract = new web3.eth.Contract(json.abi, lockdropContractAddress);
@@ -177,10 +175,10 @@ async function configureTransaction(isMetamask) {
         gasLimit: 100000,
       };
     }
-    returnTransaction = contract.methods.lock(lockdropLocktime, encodedEdgewareAddress, validatorIntent);
+    returnTransaction = contract.methods.lock(lockdropLocktime, edgewarePublicKey, validatorIntent);
     args = {
       term: lockdropLocktime,
-      edgewareAddr: encodedEdgewareAddress,
+      edgewareAddr: edgewarePublicKey,
       isValidator: validatorIntent,
     };
   } else {
@@ -201,11 +199,11 @@ async function configureTransaction(isMetamask) {
       signalingContractNonce = signalingContractNonce || 0;
     }
 
-    returnTransaction = contract.methods.signal(signalingContractAddress, signalingContractNonce, encodedEdgewareAddress);
+    returnTransaction = contract.methods.signal(signalingContractAddress, signalingContractNonce, edgewarePublicKey);
     args = {
       contractAddr: signalingContractAddress,
       nonce: signalingContractNonce,
-      edgewareAddr: encodedEdgewareAddress,
+      edgewareAddr: edgewarePublicKey,
     };
   }
   return { returnTransaction, params, failure, reason, args };
