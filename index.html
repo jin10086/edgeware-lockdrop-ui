@@ -21,10 +21,7 @@
     <div class="container body-container">
       <div class="wallet-explanation">
         <p>
-          The Edgeware lockdrop will distribute 90% of genesis EDG to
-          Ethereum holders. EDG will be used for transaction fees,
-          staking as a validator, and voting in Edgeware's autonomous
-          self-governance process.
+          The Edgeware lockdrop will distribute 90% of genesis EDG to Ethereum holders who timelock or signal their ETH.
         </p>
         If you're new to the lockdrop, read more on
         <a href="https://blog.edgewa.re/important-updates-to-the-edgeware-lockdrop/" target="_blank">our blog</a>. If you
@@ -174,7 +171,7 @@
           <h3>Step 4.</h3>
           <p>
             Click the Access button. Select <strong>signal</strong>
-            or <strong>lock</strong> from the dropdown. Input the
+            or <strong>lock</strong> from the dropdown, and input the
             following data.
           </p>
           <pre id="LOCKDROP_MYCRYPTO_ARGUMENTS"></pre>
@@ -182,11 +179,15 @@
           <p>
           </p>
           <p>
-            Unlock your wallet, and enter the amount you are locking
-            under <strong>Value</strong>, or leave blank if you are
-            signaling). We recommend setting your gas limit to 50000.
+            Unlock your wallet, and then go to <strong>Value</strong>,
+            and enter the amount of ETH you are locking. Leave
+            blank if you are signaling.
           </p>
           <pre id="LOCKDROP_MYCRYPTO_VALUE"></pre>
+          <h3>Step 6.</h3>
+          <p>
+            Uncheck 'Automatically Calculate Gas Limit' and set your gas limit to 100000.
+          </p>
           <p>
             Sign and send the transaction.
           </p>
