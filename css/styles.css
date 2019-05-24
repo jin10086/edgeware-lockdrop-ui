@@ -64,6 +64,7 @@ h3 {
 hr {
     border-top: none;
     border-bottom: 1px solid #ececec;
+    margin: 50px 0;
 }
 p {
     margin-top: 0;
@@ -156,6 +157,12 @@ input[type="submit"]:active {
 }
 .container.body-container {
     margin: 40px auto 80px;
+}
+.image {
+    display: block;
+    margin: 30px 0;
+    width: 100%;
+    max-width: 600px;
 }
 
 /*
@@ -253,7 +260,8 @@ input[type="submit"]:active {
     display: none;
 }
 
-.form-field button.metamask {
+.form-field button.metamask,
+.form-field button.unlock {
     background: #ec8118;
     color: #fff;
 }
