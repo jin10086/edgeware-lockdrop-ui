@@ -48,12 +48,19 @@
       <div class="form-field">
         <div class="form-left">
           <div class="caption">EDG public key (hex)</div>
-          <input id="EDGEWARE_PUBLIC_KEY" type="text" value=""
+          <input id="EDGEWARE_PUBLIC_KEY1" class="publickey-input" type="text" value=""
                  placeholder="e.g. 0x12b2d1..."></input>
+          <input id="EDGEWARE_PUBLIC_KEY2" class="publickey-input" type="text" value="" style="display: none;"
+                 placeholder="e.g. 0x12b2d1..."></input>
+          <input id="EDGEWARE_PUBLIC_KEY3" class="publickey-input" type="text" value="" style="display: none;"
+                 placeholder="e.g. 0x12b2d1... (ed25519)"></input>
         </div>
         <div class="explanation">
           Your EDG will go to this public key.
           If you do not have a public key, create one using the <a href="gettingstarted.html" target="_blank">instructions</a>.
+          <p class="publickey-explanation" style="display: none;">
+            If you intend to run a validator when the network launches, provide two sr25519 keys and one ed25519 key (used to start your validator).
+          </p>
         </div>
       </div>
       <div class="form-field">

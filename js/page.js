@@ -1,13 +1,11 @@
-let provider, web3, isValidBase58Input;
-const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+let provider, web3;
 const MAINNET_LOCKDROP = '0x1b75b90e60070d37cfa9d87affd124bb345bf70a';
 const ROPSTEN_LOCKDROP = '0x5940864331bBB57a10FC55e72d88299D2Dce209C';
 const LOCKDROP_ABI = JSON.stringify([{"constant":true,"inputs":[],"name":"LOCK_START_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_END_TIME","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCK_DROP_PERIOD","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_origin","type":"address"},{"name":"_nonce","type":"uint32"}],"name":"addressFrom","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"contractAddr","type":"address"},{"name":"nonce","type":"uint32"},{"name":"edgewareAddr","type":"bytes"}],"name":"signal","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"term","type":"uint8"},{"name":"edgewareAddr","type":"bytes"},{"name":"isValidator","type":"bool"}],"name":"lock","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"inputs":[{"name":"startTime","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":false,"name":"eth","type":"uint256"},{"indexed":false,"name":"lockAddr","type":"address"},{"indexed":false,"name":"term","type":"uint8"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"isValidator","type":"bool"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Locked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"contractAddr","type":"address"},{"indexed":false,"name":"edgewareAddr","type":"bytes"},{"indexed":false,"name":"time","type":"uint256"}],"name":"Signaled","type":"event"}]);
 
 $(function() {
-  $('#EDGEWARE_PUBLIC_KEY').on('blur', function(e) {
-    isValidBase58Input = validateBase58Input(e.target.value);
-    if (e.target.value !== '' && (e.target.value.length === 64 || e.target.value.length === 66)) {
+  $('.publickey-input').on('blur', function(e) {
+    if (e.target.value !== '' && e.target.value.length !== 64 && e.target.value.length !== 66) {
       alert('Please enter a valid 32-byte public key with or without 0x prefix');
     }
   });
@@ -35,12 +33,31 @@ $(function() {
       $('.body-container').removeClass('locking');
       $('.body-container').removeClass('signaling');
     }
+    $('input[name="validator"]').prop('checked', false);
+    $('input[name="validator"]').trigger('change');
+  });
+
+  $('input[name="validator"]').change(function(e) {
+    var val = $('input[name="validator"]:checked').val();
+    if (val === 'yes') {
+      $('#EDGEWARE_PUBLIC_KEY2').fadeIn(100);
+      $('#EDGEWARE_PUBLIC_KEY3').fadeIn(100);
+      $('.publickey-explanation').fadeIn(100);
+    } else {
+      $('#EDGEWARE_PUBLIC_KEY2').val('').hide();
+      $('#EDGEWARE_PUBLIC_KEY3').val('').hide();
+      $('.publickey-explanation').hide();
+    }
   });
 
   $('button.metamask').click(async function() {
+    if (!getPublicKey()) {
+      return;
+    }
     // Setup ethereum connection and web3 provider
     await enableMetamaskEthereumConnection();
     setupMetamaskWeb3Provider();
+
     // Grab form data
     let { returnTransaction, params, failure, reason } = await configureTransaction(true);
     if (failure) {
@@ -66,6 +83,9 @@ $(function() {
     $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
   });
   $('button.mycrypto').click(async function() {
+    if (!getPublicKey()) {
+      return;
+    }
     setupInfuraWeb3Provider();
     let { returnTransaction, params, failure, reason, args } = await configureTransaction(false);
     if (failure) {
@@ -96,14 +116,13 @@ $(function() {
     $('html, body').animate({ scrollTop: $('.participation-options').position().top - 50 }, 500);
   });
   $('button.cli').click(function() {
-    if (!isValidBase58Input) {
-      alert('Please enter a valid base58 edgeware public address!');
+    if (!getPublicKey()) {
       return;
     }
     $('.participation-option').hide();
     $('.participation-option.cli').slideDown(100);
     let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
-    let edgewarePublicKey = $('#EDGEWARE_PUBLIC_KEY').val();
+    let edgewarePublicKey = getPublicKey();
     const dotenv = `# ETH config
 ETH_PRIVATE_KEY=<ENTER_YOUR_PRIVATE_KEY_HEX_HERE>
 
@@ -135,17 +154,7 @@ async function configureTransaction(isMetamask) {
   let returnTransaction, params, reason, args;
 
   let lockdropContractAddress = $('#LOCKDROP_CONTRACT_ADDRESS').val();
-  let edgewarePublicKey = $('#EDGEWARE_PUBLIC_KEY').val();
-  // Make sure public key length and format is valid
-  if (edgewarePublicKey.length === 64 && edgewarePublicKey.indexOf('0x') !== -1) {
-    alert('Please enter a valid Edgeware 32-byte public key with or without 0x prefix');
-    return;
-  }
-  // Make sure public key length and format is valid
-  if (edgewarePublicKey.length === 66 && edgewarePublicKey.indexOf('0x') === -1) {
-    alert('Please enter a valid Edgeware 32-byte public key with or without 0x prefix');
-    return;
-  }
+  let edgewarePublicKey = getPublicKey();
 
   let lockdropLocktimeFormValue = $('input[name=locktime]:checked').val();
   let validatorIntent = ($('input[name=validator]:checked').val() === 'yes') ? true : false;
@@ -172,7 +181,7 @@ async function configureTransaction(isMetamask) {
       params = {
         from: coinbaseAcct,
         value: web3.utils.toWei(ethLockAmount, 'ether'),
-        gasLimit: 100000,
+        gasLimit: 150000,
       };
     }
     returnTransaction = contract.methods.lock(lockdropLocktime, edgewarePublicKey, validatorIntent);
@@ -184,7 +193,7 @@ async function configureTransaction(isMetamask) {
   } else {
     if (isMetamask) {
       const coinbaseAcct = await web3.eth.getCoinbase();
-      params = { from: coinbaseAcct, gasLimit: 100000 };
+      params = { from: coinbaseAcct, gasLimit: 150000 };
     }
 
     // FIXME: Create these inputs for signalers
@@ -209,20 +218,51 @@ async function configureTransaction(isMetamask) {
   return { returnTransaction, params, failure, reason, args };
 }
 
-/**
- * Ensure that the input is a formed correctly
- * @param {String} input
- */
-function validateBase58Input(input) {
-  // Keys should be formatted as '5GYyKi34emBk54Tf6t3xRgq71x8jRVLykaQqwkJKP76pGwry'
-  if (input.length != 48) return false;
 
-  for (var inx in input) {
-    if (BASE58_ALPHABET.indexOf(input[inx]) == -1) {
-      return false;
-    }
+function isHex(inputString) {
+  const re = /^(0x)?[0-9A-Fa-f]+$/g;
+  const result = re.test(inputString);
+  re.lastIndex = 0;
+  return result;
+}
+
+function getPublicKey() {
+  const locktime = $('input[name=locktime]:checked').val();
+  if (!locktime) {
+    alert('Select lock or signal');
+    return;
   }
-  return true;
+  const key1 = $('#EDGEWARE_PUBLIC_KEY1').val();
+  const key2 = $('#EDGEWARE_PUBLIC_KEY2').val();
+  const key3 = $('#EDGEWARE_PUBLIC_KEY3').val();
+  const validator = $('input[name="validator"]:checked').val();
+  if (!key1 || (key1.length !== 64 && key1.length !== 66) || !isHex(key1)) {
+    alert('Please enter a valid 32-byte public key with or without 0x prefix');
+    return;
+  }
+  if (validator === 'yes' &&
+      (!key2 || (key2.length !== 64 && key2.length !== 66) || !isHex(key2))) {
+    alert('(key 2) Please enter a valid 32-byte public key with or without 0x prefix');
+    return;
+  }
+  if (validator == 'yes' &&
+      (!key3 || (key3.length !== 64 && key3.length !== 66) || !isHex(key3))) {
+    alert('(key 3) Please enter a valid 32-byte public key with or without 0x prefix');
+    return;
+  }
+  if (validator == 'yes' && (key1 === key2 || key2 === key3 || key1 == key3)) {
+    alert('Please enter unique public keys');
+    return;
+  }
+
+  if (validator === 'yes') {
+    return '0x' +
+      (key1.length === 64 ? key1 : key1.slice(2)) +
+      (key2.length === 64 ? key2 : key2.slice(2)) +
+      (key3.length === 64 ? key3 : key3.slice(2));
+  } else {
+    return '0x' + (key1.length === 64 ? key1 : key1.slice(2));
+  }
 }
 
 /**

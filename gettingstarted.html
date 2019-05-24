@@ -47,7 +47,17 @@ Seed: 0xa2cc1ebe0a6cb0ae78311cd37156aac988e61c312d73cafe357cc2f1fd069e09
 Public key (hex): 0xb2d1bda2d363cf25a26a9fb34ea314dc8981e378ca4797c52117f65731602826
 Address (SS58): 5G7AgnBBNvdDYRVvcCYz95pMjGtS3ouWaq23Dcqe6rDjDuh7</pre>
           </li>
-          <li>Copy the Public key (hex) for use on the Edgeware Lockdrop homepage</li>
+          <li>
+            Copy the Public key (hex) for use on the Edgeware Lockdrop homepage.
+          </li>
+          <li>
+            Note that if you intend to be a validator when the network
+            launches, you will need to generate three public keys, two
+            of which should be sr25519 keys as above:
+            <pre>subkey generate</pre>
+            One key should be an ed25519 key:
+            <pre>subkey generate -e</pre>
+          </li>
         </ul>
         <br/>
         <p><a href="/">&lsaquo; Back home</a>

@@ -72,6 +72,9 @@ p {
 a {
     color: #111;
 }
+li {
+    margin: 12px 0;
+}
 pre {
     font: 14.5px SF Mono, Roboto, Menlo, monospace;
     line-height: 1.3;
@@ -168,6 +171,9 @@ input[type="submit"]:active {
     display: flex;
     margin: 40px 0;
 }
+.form-field input[type="text"] + input[type="text"] {
+    margin: 10px 0;
+}
 .form-field.form-field-locking,
 .form-field.form-field-signaling {
     visibility: hidden;
@@ -226,6 +232,9 @@ input[type="submit"]:active {
     display: block;
     color: #aaa;
     padding-top: 30px;
+}
+.form-field .explanation p {
+    margin: 10px 0;
 }
 .form-field .explanation a {
     color: #aaa;
