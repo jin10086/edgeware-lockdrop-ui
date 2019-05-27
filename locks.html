@@ -10,7 +10,12 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" type="image/png" href="images/favicon.png">
     <script src="js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="js/locks.js"></script>
+    <script>
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+    </script>
   </head>
   <body>
     <div class="header">
@@ -19,6 +24,8 @@
       </div>
     </div>
     <div class="container body-container">
+      <div id="ETH_CHART"></div>
+      <div id="EFFECTIVE_ETH_CHART"></div>
       <div class="form-field">
         <div class="form-left">
           <div class="caption">Lockdrop contract address</div>
@@ -50,6 +57,6 @@
         &copy; 2019 <span class="i18n">Commonwealth Labs</span>
       </div>
     </div>
-  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js" integrity="sha256-nWBTbvxhJgjslRyuAKJHK+XcZPlCnmIAAMixz6EefVk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js" integrity="sha256-nWBTbvxhJgjslRyuAKJHK+XcZPlCnmIAAMixz6EefVk=" crossorigin="anonymous"></script>
   </body>
 </html>
