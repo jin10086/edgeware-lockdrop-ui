@@ -48,6 +48,9 @@ $(async function() {
     const lockEvents = await getLocks(contract, addr);
     const signalEvents = await getSignals(contract, addr);
     const now = await getCurrentTimestamp();
+    let etherscanNet = ($('input[name="network"]:checked').val() === 'mainnet')
+      ? 'https://etherscan.io/tx/'
+      : 'https://ropsten.etherscan.io/tx/';
     // Append only 1 signal event others will not be counted
     if (signalEvents.length > 0) {
       let balance = await web3.eth.getBalance(signalEvents[0].returnValues.contractAddr);
@@ -56,6 +59,7 @@ $(async function() {
         '<li>',
         '   <div>',
         '     <h3>Signal Event</h3>',
+        `     <p>Tx Hash: <a href=${etherscanNet}${signalEvents[0].transactionHash} target="_blank">${signalEvents[0].transactionHash}</a></p>`,
         `     <p>ETH Signaled: ${balance}</p>`,
         `     <p>Signaling Address: ${signalEvents[0].returnValues.contractAddr}</p>`,
         `     <p>EDG Keys: ${signalEvents[0].returnValues.edgewareKey}</p>`,
@@ -68,6 +72,7 @@ $(async function() {
     let promises = lockEvents.map(async event => {
       let lockStorage = await getLockStorage(event.returnValues.lockAddr);
       return {
+        txHash: event.transactionHash,
         owner: event.returnValues.owner,
         eth: web3.utils.fromWei(event.returnValues.eth, 'ether'),
         lockContractAddr: event.returnValues.lockAddr,
@@ -83,8 +88,9 @@ $(async function() {
         '<li>',
         '   <div>',
         '     <h3>Lock Event</h3>',
+        `     <p>Tx Hash: <a href=${etherscanNet}${r.txHash} target="_blank">${r.txHash}</a></p>`,
         `     <p>Owner: ${r.owner}</p>`,
-        `     <p>ETH Locked: ${r.eth}</p>`,
+        `     <p>ETH Locked: ${r.eth} ether</p>`,
         `     <p>LUC Address: ${r.lockContractAddr}</p>`,
         `     <p>Term Length: ${(r.term === 0) ? '3 months' : (r.term === 1) ? '6 months' : '12 months'}</p>`,
         `     <p>EDG Keys: ${r.edgewarePublicKeys}</p>`,
