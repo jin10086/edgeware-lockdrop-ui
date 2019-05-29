@@ -319,8 +319,7 @@ function setupWeb3Provider() {
     provider = window.ethereum || window.web3.currentProvider;
   } else {
     // If no provider is found default to public INFURA gateway
-    let network = $('input[name="network"]:checked').val();
-    web3 = new Web3(new Web3.providers.HttpProvider(`https://${network}.infura.io`));
+    web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io'));
   }
 
   web3 = new window.Web3(provider);
